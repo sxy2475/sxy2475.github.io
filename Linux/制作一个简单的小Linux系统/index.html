@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="执念" />
+
+
+
+<meta name="description" content="前言本篇博文主要通过裁剪现有Linux系统，打造出一个属于你自己的小Linux系统，并让其能够装载网卡驱动，配置IP地址后可以实现网络功能。但在开始制作之前需要先向你说明本次制作前的一些准备工作，以及制作的思路。">
+<meta name="keywords" content="CentOS,启动流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="制作一个简单的小Linux系统">
+<meta property="og:url" content="http://subtraction.tech/Linux/制作一个简单的小Linux系统/index.html">
+<meta property="og:site_name" content="Learning - 知也无涯">
+<meta property="og:description" content="前言本篇博文主要通过裁剪现有Linux系统，打造出一个属于你自己的小Linux系统，并让其能够装载网卡驱动，配置IP地址后可以实现网络功能。但在开始制作之前需要先向你说明本次制作前的一些准备工作，以及制作的思路。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/CgC1G2E1l9.png?imageslim">
+<meta property="og:updated_time" content="2018-04-23T12:45:21.994Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="制作一个简单的小Linux系统">
+<meta name="twitter:description" content="前言本篇博文主要通过裁剪现有Linux系统，打造出一个属于你自己的小Linux系统，并让其能够装载网卡驱动，配置IP地址后可以实现网络功能。但在开始制作之前需要先向你说明本次制作前的一些准备工作，以及制作的思路。">
+<meta name="twitter:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/CgC1G2E1l9.png?imageslim">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Learning - 知也无涯" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/logo.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-corner-indicator.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>制作一个简单的小Linux系统 | Learning - 知也无涯</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?fb5cb1201030123c8ccc4051f4e759fd";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/sxy.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">执念</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CA/">CA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/">Gateway</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HA/">HA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Iptables/">Iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keepalived/">Keepalived</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PXE/">PXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RE/">RE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSH/">SSH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/find/">find</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/locate/">locate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/man/">man</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://www.ilinux.io/">ilinux.io</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于系统架构</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">执念</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/sxy.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">执念</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-制作一个简单的小Linux系统" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Linux/制作一个简单的小Linux系统/" class="article-date">
+      <time datetime="2017-08-23T06:17:01.000Z" itemprop="datePublished">2017-08-23</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      制作一个简单的小Linux系统
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本篇博文主要通过裁剪现有Linux系统，打造出一个属于你自己的小Linux系统，并让其能够装载网卡驱动，配置IP地址后可以实现网络功能。但在开始制作之前需要先向你说明本次制作前的一些准备工作，以及制作的思路。</p>
+<a id="more"></a>
+<hr>
+<h3 id="制作前的准备"><a href="#制作前的准备" class="headerlink" title="制作前的准备"></a>制作前的准备</h3><p>凡事预则立，不预则废，无论工作学习皆是如此。所以在开启本次自制小Linux的实验之前，你需要先做好两大项准备，分别是看的见的物理设备和看不见的制作思路。</p>
+<h4 id="物理设备"><a href="#物理设备" class="headerlink" title="物理设备"></a>物理设备</h4><p>首先，你要准备一台linux主机和一块磁盘，这块磁盘用于安装和启动我们自制的小Linux，可以是块硬盘，也可以是U盘。对于磁盘空间没过多要求，大于2G就可以。<br>将准备好的磁盘连接到Linux主机，使用lsblk命令查看连接到主机的设备，确定你的磁盘被加载到了系统中。</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="comment">#lsblk</span></span><br><span class="line">NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sr0     11:0   <span class="number"> 1 </span> 3.7G <span class="number"> 0 </span>rom  /media/CentOS_6.9_Final</span><br><span class="line">sdb      8:16  <span class="number"> 0 </span>  16G <span class="number"> 0 </span>disk</span><br><span class="line"><span class="comment">#这块sdb磁盘就是我为本次实验准备的磁盘。</span></span><br><span class="line">sda      8:0   <span class="number"> 0 </span> 200G <span class="number"> 0 </span>disk</span><br><span class="line">├─sda1   8:1   <span class="number"> 0 </span>1000M <span class="number"> 0 </span>part /boot</span><br><span class="line">├─sda2   8:2   <span class="number"> 0 </span>48.8G <span class="number"> 0 </span>part /</span><br><span class="line">├─sda3   8:3   <span class="number"> 0 </span>47.9G <span class="number"> 0 </span>part /app</span><br><span class="line">├─sda4   8:4   <span class="number"> 0 </span>   1K <span class="number"> 0 </span>part</span><br><span class="line">└─sda5   8:5   <span class="number"> 0 </span>   2G <span class="number"> 0 </span>part [SWAP]</span><br></pre></td></tr></table></figure>
+<h4 id="制作思路"><a href="#制作思路" class="headerlink" title="制作思路"></a>制作思路</h4><p>有一个清晰且准确的实验流程思路，对于成功完成实验至关重要。下面是我以清单的方式向你说明的大致制作流程，请在实验过程中务必按照此流程操作，以确保实验成功。</p>
+<ol>
+<li>创建分区和文件系统</li>
+<li>挂载boot分区</li>
+<li>安装grub</li>
+<li>复制内核和initramfs文件</li>
+<li>建立grub.conf配置文件</li>
+<li>挂载根分区</li>
+<li>复制bash和相关命令及相关库文件</li>
+<li>创建根分区下的一级目录</li>
+<li>测试定制的小Linux是否制作成功</li>
+</ol>
+<hr>
+<h3 id="创建分区和文件系统"><a href="#创建分区和文件系统" class="headerlink" title="创建分区和文件系统"></a>创建分区和文件系统</h3><p>使用fdisk命令创建分区，需要至少划分两个分区，用于后面boot和根的挂载。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~#fdisk /dev/sdb</span><br><span class="line">		……此处省略部分显示内容</span><br><span class="line">Command (m <span class="keyword">for</span> help): n		#n:新建分区</span><br><span class="line">Command action</span><br><span class="line">   e   extended</span><br><span class="line">   p   primary partition (1-4)</span><br><span class="line">p	#p:创建主分区</span><br><span class="line">Partition number (1-4): 1  #1：创建第一个主分区</span><br><span class="line">First cylinder (1-2088,<span class="built_in"> default </span>1): #此处回车默认就可</span><br><span class="line">Using<span class="built_in"> default </span>value 1</span><br><span class="line">Last cylinder, +cylinders <span class="keyword">or</span> +size&#123;K,M,G&#125; (1-2088,<span class="built_in"> default </span>2088): +100M</span><br><span class="line"><span class="comment">#此处输入+100M,代表第一分区的大小是100M，此分区之后会后用来挂载/boot分区。</span></span><br><span class="line">Command (m <span class="keyword">for</span> help): n</span><br><span class="line">Command action</span><br><span class="line">   e   extended</span><br><span class="line">   p   primary partition (1-4)</span><br><span class="line">p</span><br><span class="line">Partition number (1-4): 2</span><br><span class="line">First cylinder (15-2088,<span class="built_in"> default </span>15): #此处回车键</span><br><span class="line">Using<span class="built_in"> default </span>value 15</span><br><span class="line">Last cylinder, +cylinders <span class="keyword">or</span> +size&#123;K,M,G&#125; (15-2088,<span class="built_in"> default </span>2088):#此处回车键</span><br><span class="line">Using<span class="built_in"> default </span>value 2088</span><br><span class="line"><span class="comment">#这是创建的第二个分区，这里没有指定大小，而是直接回车使用默认值，将所有剩余空间全部分给第二分区，之后会用来挂载根分区。</span></span><br><span class="line">Command (m <span class="keyword">for</span> help): w  </span><br><span class="line"><span class="comment">#w：保存退出</span></span><br><span class="line">The partition table has been altered!</span><br><span class="line"></span><br><span class="line">Calling ioctl() <span class="keyword">to</span> re-read partition table.</span><br><span class="line">Syncing disks.</span><br></pre></td></tr></table></figure>
+<p>使用lsblk命令查看创建好的分区，我们可以看到分区sdb1和sdb2,以及这两个分区的大小。</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="comment">#lsblk</span></span><br><span class="line">NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sr0     11:0   <span class="number"> 1 </span>  3.7G <span class="number"> 0 </span>rom  /media/CentOS_6.9_Final</span><br><span class="line">sdb      8:16  <span class="number"> 0 </span>   16G <span class="number"> 0 </span>disk</span><br><span class="line">├─sdb1   8:17  <span class="number"> 0 </span>109.8M <span class="number"> 0 </span>part</span><br><span class="line">└─sdb2   8:18  <span class="number"> 0 </span> 15.9G <span class="number"> 0 </span>part</span><br><span class="line">sda      8:0   <span class="number"> 0 </span>  200G <span class="number"> 0 </span>disk</span><br><span class="line">├─sda1   8:1   <span class="number"> 0 </span> 1000M <span class="number"> 0 </span>part /boot</span><br><span class="line">├─sda2   8:2   <span class="number"> 0 </span> 48.8G <span class="number"> 0 </span>part /</span><br><span class="line">├─sda3   8:3   <span class="number"> 0 </span> 47.9G <span class="number"> 0 </span>part /app</span><br><span class="line">├─sda4   8:4   <span class="number"> 0 </span>    1K <span class="number"> 0 </span>part</span><br><span class="line">└─sda5   8:5   <span class="number"> 0 </span>    2G <span class="number"> 0 </span>part [SWAP]</span><br></pre></td></tr></table></figure>
+<p>使用mkfs.ext4命令为/dev/sdb1和/dev/sdb2分区创建文件系统</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="selector-id">#mkfs</span><span class="selector-class">.ext4</span> /dev/sdb1</span><br><span class="line">root&amp;Centos6: ~<span class="selector-id">#mkfs</span><span class="selector-class">.ext4</span> /dev/sdb2</span><br></pre></td></tr></table></figure>
+<p>使用blkid命令检查文件系统是否成功创建。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~#blkid</span><br><span class="line">*/dev/sdb1: <span class="attribute">UUID</span>=<span class="string">"daf86143-9f02-479b-8023-e83491b075c8"</span> <span class="attribute">TYPE</span>=<span class="string">"ext4"</span></span><br><span class="line">*/dev/sdb2: <span class="attribute">UUID</span>=<span class="string">"ac76751f-4796-4a70-9bfa-7a1d7eaf6b78"</span> <span class="attribute">TYPE</span>=<span class="string">"ext4"</span></span><br><span class="line"><span class="comment">#可以查到/dev/sdb2和/dev/sdb1，并且有TYPE="ext4"字样，说明分区创建成功。</span></span><br><span class="line">/dev/sda1: <span class="attribute">UUID</span>=<span class="string">"fe3eec64-c3e4-49e8-ad00-5932afbfbc4e"</span> <span class="attribute">TYPE</span>=<span class="string">"ext4"</span></span><br><span class="line">/dev/sda2: <span class="attribute">UUID</span>=<span class="string">"8c0a2fd8-99c2-4ee1-b7c9-05f51fcf4f7a"</span> <span class="attribute">TYPE</span>=<span class="string">"ext4"</span></span><br><span class="line">/dev/sda3: <span class="attribute">UUID</span>=<span class="string">"99735fe4-96f0-4c2b-8ca8-7235d3857359"</span> <span class="attribute">TYPE</span>=<span class="string">"ext4"</span></span><br><span class="line">/dev/sda5: <span class="attribute">UUID</span>=<span class="string">"a70aa239-9377-4aeb-9d3c-1aa73216d60e"</span> <span class="attribute">TYPE</span>=<span class="string">"swap"</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="挂载boot分区"><a href="#挂载boot分区" class="headerlink" title="挂载boot分区"></a>挂载boot分区</h3><p><strong>注意：挂载点的子目录必须为boot</strong></p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~#<span class="keyword">mkdir</span> /mnt/<span class="keyword">boot</span></span><br><span class="line">#创建挂载点</span><br><span class="line">root&amp;Centos6: ~#mount /dev/sdb1 /mnt/<span class="keyword">boot</span>/</span><br><span class="line">#将/dev/sdb1挂载到/mnt/<span class="keyword">boot</span>/目录下</span><br><span class="line">root&amp;Centos6: ~#<span class="keyword">ls</span> /mnt/<span class="keyword">boot</span>/</span><br><span class="line">lost+found</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="安装grub"><a href="#安装grub" class="headerlink" title="安装grub"></a>安装grub</h3><p>安装grub是关乎启动的重要一步，利用grub-install命令可以生成引导启动流程的第1-2阶段。grub安装的时候会默认以boot为根，会自动安装到boot目录下。但当前系统有两个boot目录，/boot和/mnt/boot。所以需要以- -root-directory=/mnt/选项来指定要以/mnt/目录为根安装grub，这样在grub-install命令安装grub时，会自动找到/mnt/下的boot目录进行安装。这也是为什么上一步挂载boot目录时，必须挂载点的子目录为boot的原因。</p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~#grub-install <span class="comment">--root-directory=/mnt/ /dev/sdb</span></span><br><span class="line">#将grub安装到/dev/sdb设备上，以/mnt/为根目录。</span><br><span class="line">Probing devices <span class="keyword">to</span> guess BIOS drives. This may take a long <span class="built_in">time</span>.</span><br><span class="line">Installation finished. No <span class="literal">error</span> reported.</span><br><span class="line">This <span class="keyword">is</span> the contents <span class="keyword">of</span> the device <span class="keyword">map</span> /mnt//boot/grub/device.<span class="keyword">map</span>.</span><br><span class="line">Check <span class="keyword">if</span> this <span class="keyword">is</span> correct <span class="keyword">or</span> <span class="keyword">not</span>. <span class="keyword">If</span> any <span class="keyword">of</span> the lines <span class="keyword">is</span> incorrect,</span><br><span class="line">fix it <span class="keyword">and</span> re-run the script `grub-install'.</span><br><span class="line"></span><br><span class="line">(fd0)	/dev/fd0</span><br><span class="line">(hd0)	/dev/sda</span><br><span class="line">(hd1)	/dev/sdb</span><br></pre></td></tr></table></figure>
+<p>确定grub安装成功</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="comment">#ls /mnt/boot/</span></span><br><span class="line"><span class="comment">#查看生成的grub目录</span></span><br><span class="line">grub  lost+found</span><br><span class="line">root&amp;Centos6: ~<span class="comment">#ls /mnt/boot/grub/</span></span><br><span class="line"><span class="comment">#查看安装完grub后在grub目录下生成的文件</span></span><br><span class="line">device.map     fat_stage1_5  iso9660_stage1_5  minix_stage1_5     stage1  ufs2_stage1_5    xfs_stage1_5</span><br><span class="line">e2fs_stage1_5  ffs_stage1_5  jfs_stage1_5      reiserfs_stage1_5  stage2  vstafs_stage1_5</span><br><span class="line">root&amp;Centos6: ~<span class="comment">#hexdump -C -n 512 /dev/sdb</span></span><br><span class="line"><span class="comment">#确定grub的第一阶段写入到了磁盘的前446字节。如果没有成功安装第一阶段，你看到前446字节都会是0，并且没有GRUB字样。</span></span><br><span class="line">	……此处省略部分显示内容</span><br><span class="line">00000170 <span class="number"> 00 </span>be<span class="number"> 93 </span>7d e8 2a<span class="number"> 00 </span>eb  fe<span class="number"> 47 </span>52<span class="number"> 55 </span>42<span class="number"> 20 </span>00<span class="number"> 47 </span> |...&#125;.*...GRUB .G|	</span><br><span class="line">00000180 <span class="number"> 65 </span>6f 6d<span class="number"> 00 </span>48<span class="number"> 61 </span>72<span class="number"> 64 </span><span class="number"> 20 </span>44<span class="number"> 69 </span>73 6b<span class="number"> 00 </span>52<span class="number"> 65 </span> |eom.Hard Disk.Re|</span><br><span class="line">00000190 <span class="number"> 61 </span>64<span class="number"> 00 </span>20<span class="number"> 45 </span>72<span class="number"> 72 </span>6f <span class="number"> 72 </span>00 bb<span class="number"> 01 </span>00 b4 0e cd  |ad. Error.......|</span><br><span class="line">000001a0 <span class="number"> 10 </span>ac 3c<span class="number"> 00 </span>75 f4 c3<span class="number"> 00 </span><span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00  |..&lt;.u...........|</span><br><span class="line">000001b0 <span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00  9a<span class="number"> 38 </span>28 d2<span class="number"> 00 </span>00<span class="number"> 00 </span>01  |.........8(.....|</span><br><span class="line">000001c0 <span class="number"> 01 </span>00<span class="number"> 83 </span>fe 3f 0d 3f<span class="number"> 00 </span><span class="number"> 00 </span>00 4f 6e<span class="number"> 03 </span>00<span class="number"> 00 </span>00  |....?.?...On....|</span><br><span class="line">000001d0 <span class="number"> 01 </span>0e<span class="number"> 83 </span>fe ff ff 8e 6e <span class="number"> 03 </span>00 9a<span class="number"> 67 </span>fc<span class="number"> 01 </span>00<span class="number"> 00 </span> |.......n...g....|</span><br><span class="line">000001e0 <span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00 <span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00  |................|</span><br><span class="line">000001f0 <span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00 <span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 00 </span>00<span class="number"> 55 </span>aa  |..............U.|</span><br><span class="line">00000200</span><br></pre></td></tr></table></figure>
+<h3 id="复制内核和initramfs文件"><a href="#复制内核和initramfs文件" class="headerlink" title="复制内核和initramfs文件"></a>复制内核和initramfs文件</h3><p>在系统的/boot目录下有关乎启动的三大文件，系统若想启动，这三个文件缺一不可。这三个文件分别是我们这一步要复制到/mnt/boot目录下的vmlinuz-2.6.32-696.el6.x86_64 和 initramfs-2.6.32-696.el6.x86_64.img文件。以及下一步要创建的grub.conf文件。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="selector-id">#cp</span> /boot/vmlinuz-<span class="number">2.6</span>.<span class="number">32</span>-<span class="number">696</span><span class="selector-class">.el6</span><span class="selector-class">.x86_64</span>   /mnt/boot/</span><br><span class="line">#这个文件就是大名鼎鼎的Linux内核文件，要将它复制到/mnt/boot/下。</span><br><span class="line">root&amp;Centos6: ~<span class="selector-id">#cp</span> /boot/initramfs-<span class="number">2.6</span>.<span class="number">32</span>-<span class="number">696</span><span class="selector-class">.el6</span><span class="selector-class">.x86_64</span><span class="selector-class">.img</span> /mnt/boot/</span><br><span class="line">#此文件是在系统启动后用于挂载根的，也很重要，要将它复制到/mnt/boot/下。</span><br><span class="line">root&amp;Centos6: ~<span class="selector-id">#ls</span> /mnt/boot/</span><br><span class="line">grub  initramfs-<span class="number">2.6</span>.<span class="number">32</span>-<span class="number">696</span><span class="selector-class">.el6</span><span class="selector-class">.x86_64</span><span class="selector-class">.img</span>  lost+found  vmlinuz-<span class="number">2.6</span>.<span class="number">32</span>-<span class="number">696</span><span class="selector-class">.el6</span><span class="selector-class">.x86_64</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="建立grub-conf配置文件"><a href="#建立grub-conf配置文件" class="headerlink" title="建立grub.conf配置文件"></a>建立grub.conf配置文件</h3><p>grub.conf配置文件要创建在/mnt/boot/grub/目录下，并要在文件里写入基本的启动配置，以确保系统可以有序启动。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~# vim /mnt/boot/grub/grub.conf</span><br><span class="line">   <span class="attribute">default</span>=0    #指定默认启动菜单</span><br><span class="line">   <span class="attribute">timeout</span>=5    #启动菜单出现后5秒进入系统</span><br><span class="line">   title custom linux   #启动项名称</span><br><span class="line">   root (hd0,0)   #以第一块硬盘的第一个分取，作为启动的根分区</span><br><span class="line">   kernel /vmlinuz-2.6.32-696.el6.x86_64 <span class="attribute">root</span>=/dev/sda2 <span class="attribute">selinux</span>=0 <span class="attribute">init</span>=/bin/bash</span><br><span class="line">   #kernel /vmlinuz-2.6.32-696.el6.x86_64 ：把boot作为根，加载根下的内核文件</span><br><span class="line">   #<span class="attribute">root</span>=/dev/sda2 ：真正根所在的分区</span><br><span class="line">   #<span class="attribute">selinux</span>=0 ：关闭SELinux</span><br><span class="line">   #<span class="attribute">init</span>=/bin/bash ：以/bin/bash作为启动后运行的第一个程序</span><br><span class="line">   initrd /initramfs-2.6.32-696.el6.x86_64.img</span><br><span class="line">   加载伪文件系统ramdisk</span><br></pre></td></tr></table></figure>
+<h3 id="挂载根分区"><a href="#挂载根分区" class="headerlink" title="挂载根分区"></a>挂载根分区</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="selector-id">#mkdir</span> /mnt/root</span><br><span class="line">#创建挂载点</span><br><span class="line">root&amp;Centos6: ~<span class="selector-id">#mount</span> /dev/sdb2 /mnt/root</span><br><span class="line">#挂载/dev/sdb2 到/mnt/root目录下</span><br><span class="line">root&amp;Centos6: ~<span class="selector-id">#ls</span> /mnt/root/</span><br><span class="line">lost+found</span><br></pre></td></tr></table></figure>
+<h3 id="复制bash和相关命令及相关库文件"><a href="#复制bash和相关命令及相关库文件" class="headerlink" title="复制bash和相关命令及相关库文件"></a>复制bash和相关命令及相关库文件</h3><p>经过了前面的操作后自制小Linux的框架就已经基本搭建好了，接下来要做的就是丰富它的功能了。Linux的哲学思想是一切皆文件，所以只要把现有系统相应功能的二进制文件和库文件复制到/mnt/root目录下，自制的Linux就可以使用了。<br>要实现这个功能比较复杂繁琐，这就要用到我们Linux的shell脚本了，这个脚本已经写好，作用是拷贝命令，你可以直接复制编辑后使用。<br>下面是脚本的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="comment">#cat copycmd.sh</span></span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="function"><span class="title">copy_cmd</span></span>()&#123;</span><br><span class="line">        <span class="built_in">local</span> cmd_destdir=<span class="variable">$destdir</span>$(dirname $(<span class="built_in">which</span> <span class="variable">$1</span>))</span><br><span class="line">        <span class="keyword">if</span> [ ! -d <span class="variable">$cmd_destdir</span> ] ;<span class="keyword">then</span></span><br><span class="line">           mkdir -pv <span class="variable">$cmd_destdir</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line">         cp -v $(<span class="built_in">which</span> <span class="variable">$1</span>) <span class="variable">$cmd_destdir</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="title">copy_libfile</span></span>()&#123;</span><br><span class="line">       ldd $(<span class="built_in">which</span> <span class="variable">$1</span>)|grep -oE <span class="string">"/.* "</span> | <span class="keyword">while</span> <span class="built_in">read</span> libfile</span><br><span class="line">        <span class="keyword">do</span></span><br><span class="line">            <span class="built_in">local</span> lib_destdir=<span class="variable">$destdir</span>$(dirname <span class="variable">$libfile</span>)</span><br><span class="line">            <span class="built_in">local</span> lib_destfile=<span class="variable">$destdir</span><span class="variable">$libfile</span></span><br><span class="line">            <span class="keyword">if</span> [ -e <span class="variable">$lib_destfile</span> ];<span class="keyword">then</span></span><br><span class="line">                    <span class="built_in">continue</span></span><br><span class="line">            <span class="keyword">elif</span> [ -d <span class="variable">$lib_destdir</span> ] ;<span class="keyword">then</span></span><br><span class="line">                 cp -v <span class="variable">$libfile</span> <span class="variable">$lib_destdir</span></span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                 mkdir -pv <span class="variable">$lib_destdir</span></span><br><span class="line">                 cp -v <span class="variable">$libfile</span> <span class="variable">$lib_destdir</span></span><br><span class="line">           <span class="keyword">fi</span></span><br><span class="line">        <span class="keyword">done</span></span><br><span class="line">&#125;</span><br><span class="line">destdir=/mnt/root</span><br><span class="line"><span class="keyword">if</span> [ ! -d <span class="variable">$destdir</span> ];<span class="keyword">then</span></span><br><span class="line">    mkdir <span class="variable">$destdir</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">true</span> ;<span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">"\033[34mPlease input a execute command:\033[0m"</span></span><br><span class="line">    <span class="built_in">read</span> cmd</span><br><span class="line">    <span class="keyword">if</span> [ <span class="string">"<span class="variable">$cmd</span>"</span> == quit ];<span class="keyword">then</span></span><br><span class="line">        <span class="built_in">exit</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">    <span class="built_in">which</span> <span class="variable">$cmd</span> &amp;&gt;/dev/null ||&#123; <span class="built_in">echo</span> <span class="variable">$cmd</span> not exist;<span class="built_in">continue</span>; &#125;</span><br><span class="line">    copy_cmd <span class="variable">$cmd</span></span><br><span class="line">    copy_libfile <span class="variable">$cmd</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p>使用bash命令执行上边贴出的 copycmd.sh脚本，将你需要在自制Linux中使用的命令复制到/mnt/root目录下，复制完成后敲quit退出脚本。需要复制的命令根据你的需求决定，但bash是必须要复制的，因为在编辑grub.conf文件时，已将它写为系统要启动运行的第一个程序，所以没这个程序系统将无法启动。其它命令便可根据需要自行复制了，下边是执行脚本的过程。</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="comment">#bash copycmd.sh</span></span><br><span class="line">Please input a<span class="built_in"> execute </span>command:bash</span><br><span class="line"><span class="comment">#bash复制成功后的显示应当是下面这样的，如果不同请检查脚本。</span></span><br><span class="line">mkdir: created directory `/mnt/root/bin'</span><br><span class="line">`/bin/bash' -&gt; `/mnt/root/bin/bash'</span><br><span class="line">mkdir: created directory `/mnt/root/lib64'</span><br><span class="line">`/lib64/libtinfo.so.5' -&gt; `/mnt/root/lib64/libtinfo.so.5'</span><br><span class="line">`/lib64/libdl.so.2' -&gt; `/mnt/root/lib64/libdl.so.2'</span><br><span class="line">`/lib64/libc.so.6' -&gt; `/mnt/root/lib64/libc.so.6'</span><br><span class="line">`/lib64/ld-linux-x86-64.so.2' -&gt; `/mnt/root/lib64/ld-linux-x86-64.so.2'</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:ls</span><br><span class="line">`/bin/ls' -&gt; `/mnt/root/bin/ls'</span><br><span class="line">……此处省略部分显示内容</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:ifconfig</span><br><span class="line">……此处省略部分显示内容</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:ping</span><br><span class="line">`/bin/ping' -&gt; `/mnt/root/bin/ping'</span><br><span class="line">`/lib64/libidn.so.11' -&gt; `/mnt/root/lib64/libidn.so.11'</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:hostname</span><br><span class="line">`/bin/hostname' -&gt; `/mnt/root/bin/hostname'</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:cat</span><br><span class="line">`/bin/cat' -&gt; `/mnt/root/bin/cat'</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:vi</span><br><span class="line">`/bin/vi' -&gt; `/mnt/root/bin/vi'</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:vim</span><br><span class="line">……此处省略部分显示内容</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:mount</span><br><span class="line">……此处省略部分显示内容</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:umount</span><br><span class="line">`/bin/umount' -&gt; `/mnt/root/bin/umount'</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:reboot</span><br><span class="line">……此处省略部分显示内容</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:shutdown</span><br><span class="line">……此处省略部分显示内容</span><br><span class="line">Please input a<span class="built_in"> execute </span>command:quit</span><br></pre></td></tr></table></figure>
+<p>查看目录树，确定命令都已复制成功</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="selector-id">#tree</span> /mnt/</span><br><span class="line">/mnt/</span><br><span class="line">├── boot</span><br><span class="line">│   ├── grub</span><br><span class="line">│   │   ├── device.map</span><br><span class="line">│   │   ├── e2fs_stage1_5</span><br><span class="line">……此处省略部分显示内容</span><br><span class="line">│   │   ├── vstafs_stage1_5</span><br><span class="line">│   │   └── xfs_stage1_5</span><br><span class="line">│   ├── initramfs-<span class="number">2.6</span>.<span class="number">32</span>-<span class="number">696</span><span class="selector-class">.el6</span><span class="selector-class">.x86_64</span><span class="selector-class">.img</span></span><br><span class="line">│   ├── lost+found</span><br><span class="line">│   └── vmlinuz-<span class="number">2.6</span>.<span class="number">32</span>-<span class="number">696</span><span class="selector-class">.el6</span><span class="selector-class">.x86_64</span></span><br><span class="line">└── root</span><br><span class="line">    ├── bin</span><br><span class="line">    │   ├── bash</span><br><span class="line">    │   ├── cat</span><br><span class="line">   ……此处省略部分显示内容</span><br><span class="line">    │   ├── umount</span><br><span class="line">    │   └── vi</span><br><span class="line">    ├── lib64</span><br><span class="line">    │   ├── ld-linux-x86-<span class="number">64</span><span class="selector-class">.so</span>.<span class="number">2</span></span><br><span class="line">    │   ├── libacl<span class="selector-class">.so</span>.<span class="number">1</span></span><br><span class="line">   ……此处省略部分显示内容</span><br><span class="line">    │   ├── libutil<span class="selector-class">.so</span>.<span class="number">1</span></span><br><span class="line">    │   └── libuuid<span class="selector-class">.so</span>.<span class="number">1</span></span><br><span class="line">    ├── sbin</span><br><span class="line">……此处省略部分显示内容</span><br><span class="line">            ├── libgpm<span class="selector-class">.so</span>.<span class="number">2</span></span><br><span class="line">            └── perl5</span><br><span class="line">                └── CORE</span><br><span class="line">                    └── libperl.so</span><br><span class="line"><span class="number">12</span> directories, <span class="number">55</span> files</span><br></pre></td></tr></table></figure>
+<h3 id="装载网络模块，用于实现网络功能"><a href="#装载网络模块，用于实现网络功能" class="headerlink" title="装载网络模块，用于实现网络功能"></a>装载网络模块，用于实现网络功能</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="selector-id">#bash</span> copycmd.sh</span><br><span class="line">#复制加载网卡模块的命令</span><br><span class="line">Please <span class="selector-tag">input</span> <span class="selector-tag">a</span> execute command:insmod</span><br><span class="line">Please <span class="selector-tag">input</span> <span class="selector-tag">a</span> execute command:quit</span><br><span class="line">root&amp;Centos6: ~<span class="selector-id">#ethtool</span> -<span class="selector-tag">i</span> eth0</span><br><span class="line">#查看eth0网卡对应的驱动模块名</span><br><span class="line">driver: e1000</span><br><span class="line">version: <span class="number">7.3</span>.<span class="number">21</span>-k8-NAPI</span><br><span class="line"> ……此处省略部分显示内容</span><br><span class="line">root&amp;Centos6: ~<span class="selector-id">#modinfo</span> -n e1000</span><br><span class="line">#显示模块对应路径，找出对应的模块文件</span><br><span class="line">/lib/modules/<span class="number">2.6</span>.<span class="number">32</span>-<span class="number">696</span><span class="selector-class">.el6</span><span class="selector-class">.x86_64</span>/kernel/drivers/net/e1000/e1000.ko</span><br></pre></td></tr></table></figure>
+<p>复制网卡模块文件到/mnt/root/lib64/目录下</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~<span class="selector-id">#cp</span> /lib/modules/<span class="number">2.6</span>.<span class="number">32</span>-<span class="number">696</span><span class="selector-class">.el6</span><span class="selector-class">.x86_64</span>/kernel/drivers/net/e1000/e1000<span class="selector-class">.ko</span> /mnt/root/lib64/</span><br><span class="line">root&amp;Centos6: ~<span class="selector-id">#ls</span> /mnt/root/lib64/e1000.ko</span><br><span class="line">/mnt/root/lib64/e1000.ko</span><br></pre></td></tr></table></figure>
+<h3 id="创建根分区下的一级目录"><a href="#创建根分区下的一级目录" class="headerlink" title="创建根分区下的一级目录"></a>创建根分区下的一级目录</h3><figure class="highlight tcl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: ~#ls /mnt/root/</span><br><span class="line">bin  lib64  lost+found  sbin  usr</span><br><span class="line">root&amp;Centos6: ~#<span class="keyword">cd</span> /mnt/root/</span><br><span class="line">root&amp;Centos6: root#mkdir &#123;etc,dev,<span class="keyword">proc</span>,sys,boot,home,var,mnt,media,root,tmp,lib&#125;</span><br><span class="line">root&amp;Centos6:<span class="title"> root#ls</span></span><br><span class="line"><span class="title">bin</span> <span class="title"> boot</span> <span class="title"> dev</span> <span class="title"> etc</span> <span class="title"> home</span> <span class="title"> lib</span> <span class="title"> lib64</span> <span class="title"> lost+found</span> <span class="title"> media</span> <span class="title"> mnt</span> <span class="title"> proc</span> <span class="title"> root</span> <span class="title"> sbin</span> <span class="title"> sys</span> <span class="title"> tmp</span> <span class="title"> usr</span> <span class="title"> var</span></span><br></pre></td></tr></table></figure>
+<h3 id="测试定制的小Linux是否制作成功"><a href="#测试定制的小Linux是否制作成功" class="headerlink" title="测试定制的小Linux是否制作成功"></a>测试定制的小Linux是否制作成功</h3><p>使用chroot命令切根，成功则这个定制的小Linux制作成功，如果不成功请检查脚本，排除问题后删除/mnt/root/下文件，重新复制一遍命令。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root&amp;Centos6: root<span class="comment">#chroot /mnt/root/</span></span><br><span class="line">bash-<span class="number">4.1</span><span class="comment">#  #成功切根后的命令提示符bash-4.1#</span></span><br><span class="line">bash-<span class="number">4.1</span><span class="comment"># exit</span></span><br><span class="line"><span class="keyword">exit</span></span><br><span class="line"><span class="comment">#退出切根后的当前进程</span></span><br><span class="line">root&amp;Centos6: root<span class="comment">#sync</span></span><br><span class="line">root&amp;Centos6: root<span class="comment">#sync</span></span><br><span class="line"><span class="comment">#将内存中的文件写入硬盘，同步文件</span></span><br></pre></td></tr></table></figure>
+<h3 id="挂载新机器并启用网络功能"><a href="#挂载新机器并启用网络功能" class="headerlink" title="挂载新机器并启用网络功能"></a>挂载新机器并启用网络功能</h3><p>将磁盘挂载到新主机上，使用带有自制Linux的磁盘进行启动，实现网络功能。</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bash<span class="number">-4.1</span><span class="comment"># insmod /liib64/e1000.ko</span></span><br><span class="line"><span class="comment">#加载网卡模块</span></span><br><span class="line">bash<span class="number">-4.1</span><span class="comment"># ifconfig -a</span></span><br><span class="line"><span class="comment">#查看是否成功加载网卡模块</span></span><br><span class="line">bash<span class="number">-4.1</span><span class="comment"># ifcongig eth0 172.18.22.22</span></span><br><span class="line"><span class="comment">#设置临时IP地址</span></span><br></pre></td></tr></table></figure>
+<p>具体操作过程请看下图：</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/CgC1G2E1l9.png?imageslim" alt="mark"></p>
+<p><em>到此，制作简单小Linux系统的实验就完成了！虽然功能比较简单，但通过这个实验确实可以提高对内核和启动流程的认识。</em></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Linux/制作一个简单的小Linux系统/">制作一个简单的小Linux系统</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">执念</a></p>
+        <p><span>发布时间:</span>2017-08-23, 14:17:01</p>
+        <p><span>最后更新:</span>2018-04-23, 20:45:21</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Linux/制作一个简单的小Linux系统/" title="制作一个简单的小Linux系统">http://subtraction.tech/Linux/制作一个简单的小Linux系统/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://subtraction.tech/Linux/制作一个简单的小Linux系统/　　作者: 执念" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/Security/搭建私有CA/">
+                    搭建私有CA
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/Network/CentOS-7-配置网络组/">
+                    CentOS 7 配置网络组
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#制作前的准备"><span class="toc-number">2.</span> <span class="toc-text">制作前的准备</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#物理设备"><span class="toc-number">2.1.</span> <span class="toc-text">物理设备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#制作思路"><span class="toc-number">2.2.</span> <span class="toc-text">制作思路</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建分区和文件系统"><span class="toc-number">3.</span> <span class="toc-text">创建分区和文件系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#挂载boot分区"><span class="toc-number">4.</span> <span class="toc-text">挂载boot分区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装grub"><span class="toc-number">5.</span> <span class="toc-text">安装grub</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复制内核和initramfs文件"><span class="toc-number">6.</span> <span class="toc-text">复制内核和initramfs文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建立grub-conf配置文件"><span class="toc-number">7.</span> <span class="toc-text">建立grub.conf配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#挂载根分区"><span class="toc-number">8.</span> <span class="toc-text">挂载根分区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复制bash和相关命令及相关库文件"><span class="toc-number">9.</span> <span class="toc-text">复制bash和相关命令及相关库文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#装载网络模块，用于实现网络功能"><span class="toc-number">10.</span> <span class="toc-text">装载网络模块，用于实现网络功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建根分区下的一级目录"><span class="toc-number">11.</span> <span class="toc-text">创建根分区下的一级目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试定制的小Linux是否制作成功"><span class="toc-number">12.</span> <span class="toc-text">测试定制的小Linux是否制作成功</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#挂载新机器并启用网络功能"><span class="toc-number">13.</span> <span class="toc-text">挂载新机器并启用网络功能</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-5 i,
+        .toc-level-5 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"制作一个简单的小Linux系统　| Learning - 知也无涯　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2161788';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/Security/搭建私有CA/" title="上一篇: 搭建私有CA">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/Network/CentOS-7-配置网络组/" title="下一篇: CentOS 7 配置网络组">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/WEB/Keepalived实现Nginx反代的高可用/">Keepalived实现Nginx反代的高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Iptables使用方法/">Iptables使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">使用WordPress搭建基于LAMP架构的博客平台</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">验证跨网段通信中，目标主机的网关配置对数据包接收的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/DataBase/SQL语句基础指令语法/">SQL语句基础指令语法</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/PXE自动化安装centos6和centos7/">PXE自动化安装centos6和centos7</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/SSH端口转发/">SSH端口转发</a></li><li class="post-list-item"><a class="post-list-link" href="/Security/搭建私有CA/">搭建私有CA</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/制作一个简单的小Linux系统/">制作一个简单的小Linux系统</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/CentOS-7-配置网络组/">CentOS 7 配置网络组</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/grep和正则表达式/">grep和正则表达式</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/多网卡绑定配置-bonding/">多网卡绑定配置-bonding</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux文件查找利器-locate-find/">Linux文件查找利器 locate & find</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/CentOS-7搭建yum服务器/">CentOS7搭建yum服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/vim使用手册/">vim使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux帮助使用方法/">Linux帮助使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7-3-从下载到安装/">CentOS7.3从下载到安装</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 执念
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

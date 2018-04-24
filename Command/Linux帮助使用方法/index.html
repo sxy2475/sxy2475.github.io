@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="执念" />
+
+
+
+<meta name="description" content="前言获取帮助的能力决定了Linux水平的高低！这是我在初学Linux时听老司机说过的一句话，后来随着对Linux学习的不断深入，对这句话就更是深有体会。出于对这句话的高度认同，我将平时使用Linux帮助的一些方法与总结，汇总后写成这篇博客。">
+<meta name="keywords" content="man">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux帮助使用方法">
+<meta property="og:url" content="http://subtraction.tech/Command/Linux帮助使用方法/index.html">
+<meta property="og:site_name" content="Learning - 知也无涯">
+<meta property="og:description" content="前言获取帮助的能力决定了Linux水平的高低！这是我在初学Linux时听老司机说过的一句话，后来随着对Linux学习的不断深入，对这句话就更是深有体会。出于对这句话的高度认同，我将平时使用Linux帮助的一些方法与总结，汇总后写成这篇博客。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/ihj1b2620k.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/EmG48D0d59.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/biiaaL0mbE.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/9Ij138k1gE.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/i8j8562HdG.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/A7LH13578d.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/7GgbBCCe23.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/J4HCijGeki.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/f7decD33J2.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/1G1GcL8fhD.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/7HCI4d9Ggb.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/lEBc09m3B8.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/9GGI7A7BeB.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/Al7h5imkJf.png?imageslim">
+<meta property="og:updated_time" content="2018-04-23T12:38:29.313Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux帮助使用方法">
+<meta name="twitter:description" content="前言获取帮助的能力决定了Linux水平的高低！这是我在初学Linux时听老司机说过的一句话，后来随着对Linux学习的不断深入，对这句话就更是深有体会。出于对这句话的高度认同，我将平时使用Linux帮助的一些方法与总结，汇总后写成这篇博客。">
+<meta name="twitter:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/ihj1b2620k.png?imageslim">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Learning - 知也无涯" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/logo.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-corner-indicator.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Linux帮助使用方法 | Learning - 知也无涯</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?fb5cb1201030123c8ccc4051f4e759fd";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/sxy.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">执念</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CA/">CA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/">Gateway</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HA/">HA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Iptables/">Iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keepalived/">Keepalived</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PXE/">PXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RE/">RE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSH/">SSH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/find/">find</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/locate/">locate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/man/">man</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://www.ilinux.io/">ilinux.io</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于系统架构</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">执念</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/sxy.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">执念</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Linux帮助使用方法" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Command/Linux帮助使用方法/" class="article-date">
+      <time datetime="2017-04-29T08:38:43.000Z" itemprop="datePublished">2017-04-29</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linux帮助使用方法
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Command/">Command</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/man/">man</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>获取帮助的能力决定了Linux水平的高低！这是我在初学Linux时听老司机说过的一句话，后来随着对Linux学习的不断深入，对这句话就更是深有体会。出于对这句话的高度认同，我将平时使用Linux帮助的一些方法与总结，汇总后写成这篇博客。</p>
+<a id="more"></a>
+<p>linux不同于Windows，相对于Windows更加专业化，懂得和接触过的人也相对Windows要少很多，所以我们在使用上遇到问题，也很难像Windows那样在网上可以搜出一大堆问题的解决方案。所以更加专业化的系统在使用上遇到问题时，就需要更加专业化的解决方案。那应当如何获得更加有效的解决方案呢？别担心，方法还是有很多的，你既可以用linux本身自带的强大帮助功能，也可以去软件和系统发行版的官网上获取官方资料。哈哈！能这么方便这要多亏了linux的本身强大和无数前辈们秉承开源精神的无私奉献，才使得我们可以少掉些坑走的更远。在此对那些走在linux道路上的前辈表示感谢。<br>不仅如此，学会使用帮助命令可以大大减轻你学linux的负担，都知道linux是靠命令行操作的，那你知道他有多少命令? 想知道吗？不卖关子了，你在命令行界面连按两下Tab键（就是Q左面的那个键）。没错，你没看错是两千多，而且这还不包括哪些还未安装的命令，你以为这就完了！别忘了每条命令还有着千奇百怪数不清的参数。怕是老司机也不能都记住，我就老老实实去学如何查帮助了。<br> 我在接下来的文章里面总结了一些常用的获取帮助资料的方法，希望在您看后可以帮到你。祝你每天都有收获！</p>
+<hr>
+<h3 id="获取帮助的途径"><a href="#获取帮助的途径" class="headerlink" title="获取帮助的途径"></a>获取帮助的途径</h3><p>获取帮助的途径还是有很多的，但总的来说还是先使用linux本身的帮助工具，不能解决再去网上寻找答案。下面是遇到问题常用的解决途径：</p>
+<ol>
+<li>使用手册（manual）<br>man command</li>
+<li>信息页（info）<br>info command</li>
+<li>帮助（help）<br>help command<br>command –help</li>
+<li>程序自身的帮助文档<br>README （说明）<br>INSTALL  （安装）<br>ChangeLog （更新日志）</li>
+<li>程序官方文档<br>官方站点：Documentation</li>
+<li>发行版的官方文档</li>
+<li>Google</li>
+</ol>
+<hr>
+<h3 id="man"><a href="#man" class="headerlink" title="man"></a>man</h3><p>man命令的实用性非常高，基本上所有的类Unix系统都支持，所以man的使用学习是非常重要的。我们之所以可以man到帮助文档，是因为系统里有帮助文档存在，那man的帮助文档一般都躲在哪？提供man命令帮助的文件存放在/usr/share/man目录下。<br>man工具的功能非常强大，几乎每个命令都有man的“页面”，man页面分组为不同的“章节”统称为Linux手册。</p>
+<h4 id="man命令常用参数："><a href="#man命令常用参数：" class="headerlink" title="man命令常用参数："></a>man命令常用参数：</h4><ul>
+<li>查看man手册页<br>man [章节] keyword<br>这是man命令的使用方法，如：man  5   passwd</li>
+<li>列出所有帮助<br>man -a keyword<br>会为你逐个打开相关的所有手册页</li>
+<li>搜索man手册<br>man -k keyword<br>列出所有包含关键字的文档，在记不清具体关键字时可以用它来搜索。</li>
+<li>列出符合关键字的可用手册页<br>man -f  keyword<br>搜索符合关键字的手册页列出，并标注文档分类，做简单描述。相当于whatis命令。</li>
+<li>打印man帮助文件的路径<br>man -w [章节] keyword</li>
+</ul>
+<h4 id="man命令可用的帮助文档分类有"><a href="#man命令可用的帮助文档分类有" class="headerlink" title="man命令可用的帮助文档分类有:"></a>man命令可用的帮助文档分类有:</h4><table>
+<thead>
+<tr>
+<th>章节</th>
+<th>代表内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>用户命令</td>
+</tr>
+<tr>
+<td>2</td>
+<td>内核调用的函数与工具</td>
+</tr>
+<tr>
+<td>3</td>
+<td>常见的函数与函数库</td>
+</tr>
+<tr>
+<td>4</td>
+<td>设备文件及特殊文件的说明</td>
+</tr>
+<tr>
+<td>5</td>
+<td>配置文件</td>
+</tr>
+<tr>
+<td>6</td>
+<td>游戏</td>
+</tr>
+<tr>
+<td>7</td>
+<td>惯例与协议</td>
+</tr>
+<tr>
+<td>8</td>
+<td>管理类的命令</td>
+</tr>
+<tr>
+<td>9</td>
+<td>内核相关的文件</td>
+</tr>
+</tbody>
+</table>
+<h4 id="man帮助段落说明"><a href="#man帮助段落说明" class="headerlink" title="man帮助段落说明"></a>man帮助段落说明</h4><p>一般来讲帮助文件都很长很多，如果你想翻看的话，就要理解帮助文档的目录结构与操作方法，不然看起可是相当的费力。你可以先看一下name明白大概意思，再看description的详细描述说明，注意细节。再看options的每个参数的意思，没有找到想要的信息也别着急，还有see also可以参见相关的文档。</p>
+<p>下图是man帮助的各段落含义说明：</p>
+<table>
+<thead>
+<tr>
+<th>结构名称</th>
+<th>代表意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NAME</td>
+<td>名称及简要说明</td>
+</tr>
+<tr>
+<td>SYNOPSYS</td>
+<td>格式和使用方法说明</td>
+</tr>
+<tr>
+<td>[ ]</td>
+<td>可选内容</td>
+</tr>
+<tr>
+<td>&lt; &gt;</td>
+<td>必选内容</td>
+</tr>
+<tr>
+<td>a\</td>
+<td>b</td>
+<td>二选一</td>
+</tr>
+<tr>
+<td>{ }</td>
+<td>分组</td>
+</tr>
+<tr>
+<td>…</td>
+<td>同一内容可出现多次</td>
+</tr>
+<tr>
+<td>DESCRIPTION</td>
+<td>详细说明</td>
+</tr>
+<tr>
+<td>EXAMPLES</td>
+<td>示例（附带简单说明）</td>
+</tr>
+<tr>
+<td>OVERVIEW</td>
+<td>概述</td>
+</tr>
+<tr>
+<td>DEFAULTS</td>
+<td>默认的功能</td>
+</tr>
+<tr>
+<td>OPTIONS</td>
+<td>可用选项及其介绍说明</td>
+</tr>
+<tr>
+<td>ENVIRONMENT</td>
+<td>环境变量</td>
+</tr>
+<tr>
+<td>FILES</td>
+<td>相关文件</td>
+</tr>
+<tr>
+<td>SEE ALSO</td>
+<td>其它帮助参考</td>
+</tr>
+<tr>
+<td>AUTHOR</td>
+<td>作者</td>
+</tr>
+<tr>
+<td>COPYRIGHT</td>
+<td>版本信息</td>
+</tr>
+<tr>
+<td>REPORTING BUGS</td>
+<td>bug信息</td>
+</tr>
+<tr>
+<td>HISTORY</td>
+<td>维护历史与联系方式</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/ihj1b2620k.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/EmG48D0d59.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/biiaaL0mbE.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/9Ij138k1gE.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/i8j8562HdG.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/A7LH13578d.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/7GgbBCCe23.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/J4HCijGeki.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/f7decD33J2.png?imageslim" alt="mark"></p>
+<h4 id="man命令的操作按键"><a href="#man命令的操作按键" class="headerlink" title="man命令的操作按键"></a>man命令的操作按键</h4><p>使用这些快捷键可以快速有效的翻阅帮助文档，搜索和跳转是非常好用的功能。</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空格键</td>
+<td>向下翻一页</td>
+</tr>
+<tr>
+<td>Page Down</td>
+<td>向下翻一页</td>
+</tr>
+<tr>
+<td>Page Up</td>
+<td>向上翻一页</td>
+</tr>
+<tr>
+<td>y , k</td>
+<td>向文件首部翻一行</td>
+</tr>
+<tr>
+<td>e , j</td>
+<td>向文件尾部翻一行</td>
+</tr>
+<tr>
+<td>b</td>
+<td>向文件首部翻屏</td>
+</tr>
+<tr>
+<td>u</td>
+<td>向文件首部翻半屏</td>
+</tr>
+<tr>
+<td>d</td>
+<td>向文件尾部翻半屏</td>
+</tr>
+<tr>
+<td>HOME</td>
+<td>直接前往首页</td>
+</tr>
+<tr>
+<td>END</td>
+<td>直接前往尾页</td>
+</tr>
+<tr>
+<td>1G</td>
+<td>回到文件首部</td>
+</tr>
+<tr>
+<td>G</td>
+<td>翻至文件尾部</td>
+</tr>
+<tr>
+<td>：</td>
+<td>跳转至第#行</td>
+</tr>
+<tr>
+<td>/关键词</td>
+<td>从上至下搜索某个关键词</td>
+</tr>
+<tr>
+<td>?关键词</td>
+<td>从下至上搜索某个关键词</td>
+</tr>
+<tr>
+<td>n</td>
+<td>定位到下一个搜索到的关键词</td>
+</tr>
+<tr>
+<td>N</td>
+<td>定位到上一个搜索到的关键词</td>
+</tr>
+<tr>
+<td>N</td>
+<td>退出帮助文档</td>
+</tr>
+<tr>
+<td>q</td>
+<td>退出帮助文档</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="info"><a href="#info" class="headerlink" title="info"></a>info</h3><p>man常用于命令参考，GNU工具info则更适合通用文档参考。info的页面的结构就像一个网站，没有参数，列出所有的页面，每一页分为“节点”,链接节点之前有”<em>“字符提示。 info帮助文档存放在/usr/share/info路径下。</em></p>
+<p><strong>用法：</strong><code>info command</code></p>
+<h3 id="info中的操作按键"><a href="#info中的操作按键" class="headerlink" title="info中的操作按键"></a>info中的操作按键</h3><table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空格键</td>
+<td>向下翻一页</td>
+</tr>
+<tr>
+<td>Page Down</td>
+<td>向下翻一页</td>
+</tr>
+<tr>
+<td>Page Up</td>
+<td>向上翻一页</td>
+</tr>
+<tr>
+<td>tab</td>
+<td>在节点之间移动，有节点的地方，通常会以*显示</td>
+</tr>
+<tr>
+<td>Enter</td>
+<td>当光标在节点上面时，按下Enter可以进入该节点</td>
+</tr>
+<tr>
+<td>b</td>
+<td>移动光标到该节点画面当中的第一个节点处</td>
+</tr>
+<tr>
+<td>e</td>
+<td>移动光标到该节点画面当中的最后一个节点处</td>
+</tr>
+<tr>
+<td>n</td>
+<td>前往下一个信息页面</td>
+</tr>
+<tr>
+<td>p</td>
+<td>前往上一个信息页面</td>
+</tr>
+<tr>
+<td>u</td>
+<td>向上移动一层</td>
+</tr>
+<tr>
+<td>s(/)</td>
+<td>在信息页面当中进行搜索</td>
+</tr>
+<tr>
+<td>h</td>
+<td>显示帮助菜单</td>
+</tr>
+<tr>
+<td>?</td>
+<td>指令列表</td>
+</tr>
+<tr>
+<td>q</td>
+<td>退出</td>
+</tr>
+</tbody>
+</table>
+<h5 id="info界面"><a href="#info界面" class="headerlink" title="info界面"></a>info界面</h5><p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/1G1GcL8fhD.png?imageslim" alt="mark"></p>
+<h3 id="help"><a href="#help" class="headerlink" title="help"></a>help</h3><p>help也是一个简单易用的帮助命令，不过他在外部命令和内部命令上的用法稍有不同。所以在使用之前可以用type命令查看一下命令的类型，参考不同用法。<strong>用法：</strong><code>type  command</code>       如果输出 XXX is a shell builtin 则是内部命令 ， 其它输出则是外部命令。<br>外部命令：<br><code>command --help  或command -h</code><br>内部命令：<br><code>help command 或man bash</code><br>Help命令可以显示大多数的帮助用法和参数列表，但并非所有的。查阅方法与man相似，可以参考上面man的使用方法。但在内部命令的查询上它比man更加实用。</p>
+<p> <img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/7HCI4d9Ggb.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/lEBc09m3B8.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="本地帮助文档"><a href="#本地帮助文档" class="headerlink" title="本地帮助文档"></a>本地帮助文档</h3><p>通过本地文档查看帮助,没有网络也可以获取这些资料，linux内部有很多的文档，这些文档无法用man 或info命令查看，只有进入到/usr/share/doc目录下才能查看，这里面的文件内容非常详尽。而且数量众多，只是/usr/share/doc/下就有1012条目录，这还不包括在这之下的子目录。<br><strong>/usr/share/doc目录下主要包含以下内容:</strong></p>
+<ul>
+<li>安装了的软件包的子目录,包括了这些软件的相关原理说明  </li>
+</ul>
+<ul>
+<li>常见文档：README 、INSTALL 、CHANGES</li>
+<li>不适合其它地方的文档的位置<ul>
+<li>配置文件范例</li>
+<li>HTML/PDF/PS 格式的文档</li>
+<li>授权书详情</li>
+</ul>
+</li>
+</ul>
+<h5 id="usr-share-doc-目录下的子目录"><a href="#usr-share-doc-目录下的子目录" class="headerlink" title="/usr/share/doc/目录下的子目录"></a>/usr/share/doc/目录下的子目录</h5><p> <img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/9GGI7A7BeB.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="在线帮助"><a href="#在线帮助" class="headerlink" title="在线帮助"></a>在线帮助</h3><p>通过在线文档获取帮助，也是解决问题的常用方法。一般是去系统发行版或第三方软件发行商的官方网站去查找官方资料。当然你也可以去谷歌上看看，还是有一些不错的资料的。我就不建议使用百度了，广告多还查不到多少实用的东西。顺便再介绍两个谷歌的搜索小技巧：</p>
+<ol>
+<li>Openstack file type:pdf   筛选指定类型的文件</li>
+<li>rhcasite:redhat.com  /docs   在指定网站只搜索文档</li>
+</ol>
+<p>常见第三方应用程序官方文档</p>
+<ul>
+<li><a href="http://www.nginx.org" target="_blank" rel="noopener">http://www.nginx.org</a>    </li>
+<li><a href="http://tomcat.apache.org" target="_blank" rel="noopener">http://tomcat.apache.org</a></li>
+<li><a href="http://httpd.apache.org" target="_blank" rel="noopener">http://httpd.apache.org</a></li>
+<li><a href="http://www.python.org" target="_blank" rel="noopener">http://www.python.org</a></li>
+</ul>
+<p>通过发行版官方网站可以获得安装指南、部署指南、虚拟化指南等<br>红帽知识库和官方在线文档链接:</p>
+<ul>
+<li><a href="http://kbase.redhat.com" target="_blank" rel="noopener">http://kbase.redhat.com</a></li>
+<li><a href="http://www.redhat.com/docs" target="_blank" rel="noopener">http://www.redhat.com/docs</a></li>
+<li><a href="http://access.redhat.com" target="_blank" rel="noopener">http://access.redhat.com</a></li>
+</ul>
+<p>比较专业的网站和搜索：</p>
+<ul>
+<li><a href="http://tldp.org" target="_blank" rel="noopener">http://tldp.org</a></li>
+<li><a href="http://www.slideshare.net" target="_blank" rel="noopener">http://www.slideshare.net</a></li>
+<li><a href="http://www.google.com" target="_blank" rel="noopener">http://www.google.com</a></li>
+</ul>
+<h5 id="kbase-redhat-com红帽的知识库网站"><a href="#kbase-redhat-com红帽的知识库网站" class="headerlink" title="kbase.redhat.com红帽的知识库网站"></a>kbase.redhat.com红帽的知识库网站</h5><p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/Al7h5imkJf.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>可能你还要问，遇到问题为什么不去求教大神呢！这样查资料不是很慢。呵呵！我只能说大神很忙了。遇到问题还是尽量自己独立解决比较好，平时多和大牛们交流学习，经常使用帮助也有助于能力的提升，说不定那天你也成大神了。一般来说，大神都不会真的去记命令的，只会记忆一些比较重要的，像那些比较少用的命令和参数都是需要的时候去查帮助的，所以不会查帮助，你离大神还有十万八千里。<br>还有最后要强调的一点，由于linux是外国人发明的，所以大部分的帮助文档。都是外国人写的，很少有中文文档，即使有翻译过来的中文文档，也由于翻译水平的不同，而至使有些表达与作者原意不符。所以一开始就老老实实看英文文档吧！即使英语水平并不是很好，也要坚持。利用好手机和电脑上的翻译软件，多查多看，时间久了你就会发现其实并不是很难，英语是必要要掌握的技能。<br>总之会用帮助可以大大提升你的学习效率，提高你的水平。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Command/Linux帮助使用方法/">Linux帮助使用方法</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">执念</a></p>
+        <p><span>发布时间:</span>2017-04-29, 16:38:43</p>
+        <p><span>最后更新:</span>2018-04-23, 20:38:29</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Command/Linux帮助使用方法/" title="Linux帮助使用方法">http://subtraction.tech/Command/Linux帮助使用方法/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://subtraction.tech/Command/Linux帮助使用方法/　　作者: 执念" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/Command/vim使用手册/">
+                    vim使用手册
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/Linux/CentOS-7-3-从下载到安装/">
+                    CentOS7.3从下载到安装
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取帮助的途径"><span class="toc-number">2.</span> <span class="toc-text">获取帮助的途径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#man"><span class="toc-number">3.</span> <span class="toc-text">man</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#man命令常用参数："><span class="toc-number">3.1.</span> <span class="toc-text">man命令常用参数：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#man命令可用的帮助文档分类有"><span class="toc-number">3.2.</span> <span class="toc-text">man命令可用的帮助文档分类有:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#man帮助段落说明"><span class="toc-number">3.3.</span> <span class="toc-text">man帮助段落说明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#man命令的操作按键"><span class="toc-number">3.4.</span> <span class="toc-text">man命令的操作按键</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#info"><span class="toc-number">4.</span> <span class="toc-text">info</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#info中的操作按键"><span class="toc-number">5.</span> <span class="toc-text">info中的操作按键</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#info界面"><span class="toc-number">5.0.1.</span> <span class="toc-text">info界面</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#help"><span class="toc-number">6.</span> <span class="toc-text">help</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#本地帮助文档"><span class="toc-number">7.</span> <span class="toc-text">本地帮助文档</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#usr-share-doc-目录下的子目录"><span class="toc-number">7.0.1.</span> <span class="toc-text">/usr/share/doc/目录下的子目录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在线帮助"><span class="toc-number">8.</span> <span class="toc-text">在线帮助</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#kbase-redhat-com红帽的知识库网站"><span class="toc-number">8.0.1.</span> <span class="toc-text">kbase.redhat.com红帽的知识库网站</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-number">9.</span> <span class="toc-text">总结</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-5 i,
+        .toc-level-5 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Linux帮助使用方法　| Learning - 知也无涯　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2161788';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/Command/vim使用手册/" title="上一篇: vim使用手册">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/Linux/CentOS-7-3-从下载到安装/" title="下一篇: CentOS7.3从下载到安装">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/WEB/Keepalived实现Nginx反代的高可用/">Keepalived实现Nginx反代的高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Iptables使用方法/">Iptables使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">使用WordPress搭建基于LAMP架构的博客平台</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">验证跨网段通信中，目标主机的网关配置对数据包接收的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/DataBase/SQL语句基础指令语法/">SQL语句基础指令语法</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/PXE自动化安装centos6和centos7/">PXE自动化安装centos6和centos7</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/SSH端口转发/">SSH端口转发</a></li><li class="post-list-item"><a class="post-list-link" href="/Security/搭建私有CA/">搭建私有CA</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/制作一个简单的小Linux系统/">制作一个简单的小Linux系统</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/CentOS-7-配置网络组/">CentOS 7 配置网络组</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/grep和正则表达式/">grep和正则表达式</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/多网卡绑定配置-bonding/">多网卡绑定配置-bonding</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux文件查找利器-locate-find/">Linux文件查找利器 locate & find</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/CentOS-7搭建yum服务器/">CentOS7搭建yum服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/vim使用手册/">vim使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux帮助使用方法/">Linux帮助使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7-3-从下载到安装/">CentOS7.3从下载到安装</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 执念
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

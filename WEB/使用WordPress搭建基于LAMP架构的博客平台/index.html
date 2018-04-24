@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="执念" />
+
+
+
+<meta name="description" content="前言作为一名IT工作者，拥有自己的技术博客是展示自己的最佳方式，作为一名博客作者，可以在自己搭建的个人博客上书写博客，无疑也是件大快人心之事。那么，应该如何方便高效的搭建一个属于自己的个人博客呢，我将在下面的内容里为你细细道来。">
+<meta name="keywords" content="MariaDB,PHP,Apache">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用WordPress搭建基于LAMP架构的博客平台">
+<meta property="og:url" content="http://subtraction.tech/WEB/使用WordPress搭建基于LAMP架构的博客平台/index.html">
+<meta property="og:site_name" content="Learning - 知也无涯">
+<meta property="og:description" content="前言作为一名IT工作者，拥有自己的技术博客是展示自己的最佳方式，作为一名博客作者，可以在自己搭建的个人博客上书写博客，无疑也是件大快人心之事。那么，应该如何方便高效的搭建一个属于自己的个人博客呢，我将在下面的内容里为你细细道来。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/34LjKd68Hf.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/7B5aDc1Fh6.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/IieJC2JmDe.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/c96i6fDHc6.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/5Lhf0kIK7c.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/DEELg38ljd.png?imageslim">
+<meta property="og:updated_time" content="2018-04-23T12:50:49.879Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用WordPress搭建基于LAMP架构的博客平台">
+<meta name="twitter:description" content="前言作为一名IT工作者，拥有自己的技术博客是展示自己的最佳方式，作为一名博客作者，可以在自己搭建的个人博客上书写博客，无疑也是件大快人心之事。那么，应该如何方便高效的搭建一个属于自己的个人博客呢，我将在下面的内容里为你细细道来。">
+<meta name="twitter:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/34LjKd68Hf.png?imageslim">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Learning - 知也无涯" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/logo.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-corner-indicator.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>使用WordPress搭建基于LAMP架构的博客平台 | Learning - 知也无涯</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?fb5cb1201030123c8ccc4051f4e759fd";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/sxy.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">执念</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CA/">CA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/">Gateway</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HA/">HA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Iptables/">Iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keepalived/">Keepalived</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PXE/">PXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RE/">RE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSH/">SSH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/find/">find</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/locate/">locate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/man/">man</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://www.ilinux.io/">ilinux.io</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于系统架构</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">执念</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/sxy.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">执念</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-使用WordPress搭建基于LAMP架构的博客平台" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/" class="article-date">
+      <time datetime="2017-12-21T17:23:55.000Z" itemprop="datePublished">2017-12-22</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用WordPress搭建基于LAMP架构的博客平台
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/WEB/">WEB</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Apache/">Apache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MariaDB/">MariaDB</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/">PHP</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>作为一名IT工作者，拥有自己的技术博客是展示自己的最佳方式，作为一名博客作者，可以在自己搭建的个人博客上书写博客，无疑也是件大快人心之事。那么，应该如何方便高效的搭建一个属于自己的个人博客呢，我将在下面的内容里为你细细道来。</p>
+<a id="more"></a>
+<p>本次搭建博客使用的是世界上目前最先进的 weblog 程序WordPress，WordPress 是一个功能非常强大的博客系统，插件众多，易于扩充功能，安装和使用都非常方便。目前 WordPress 已经成为主流的 Blog 搭建平台。WordPress是使用 PHP 语言开发的Blog引擎，用户可以在支持 PHP 和MySQL数据库的服务器上架设自己的 Blog，也可以把 WordPress 当做一个个人信息发布平台，或者当作一个内容管理系统（CMS）来使用。</p>
+<p>WordPress平台是运行在LAMP架构之上的，LAMP是一组常用来搭建动态网站或者服务器的开源软件，本身都是各自独立的程序，但是因为常被放在一起使用，拥有了越来越高的兼容度，共同组成了一个强大的Web应用程序平台。</p>
+<p>本此搭建使用的LAMP架构是CentOS、Apache、Mariadb和PHP。CentOS是一个基于Red Hat Linux 提供的可自由使用源代码的企业级Linux发行版本，Apache是世界使用排名第一的Web服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的Web服务器端软件之一。MariaDB数据库管理系统是MySQL的一个分支，是目前最流行的开源数据库，PHP 是一种被广泛使用的开源的HTML 内嵌式脚本语言。</p>
+<h3 id="需要准备的软件包"><a href="#需要准备的软件包" class="headerlink" title="需要准备的软件包"></a>需要准备的软件包</h3><p><strong>本次编译安装LAMP搭建blog使用的皆是最新版的软件包，需要下载的同学可以利用我下面提供的下载链接进行下载</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root&amp;centos7: ~<span class="selector-id">#ls</span> /usr/local/src/</span><br><span class="line">apr-<span class="number">1.6</span>.<span class="number">2</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span>       httpd-<span class="number">2.4</span>.<span class="number">27</span><span class="selector-class">.tar</span><span class="selector-class">.bz2</span>                php-<span class="number">7.1</span>.<span class="number">10</span><span class="selector-class">.tar</span><span class="selector-class">.bz2</span></span><br><span class="line">apr-util-<span class="number">1.6</span>.<span class="number">0</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span>  mariadb-<span class="number">10.2</span>.<span class="number">8</span>-linux-x86_64<span class="selector-class">.tar</span><span class="selector-class">.gz</span>  wordpress-<span class="number">4.8</span>.<span class="number">1</span>-zh_CN<span class="selector-class">.tar</span><span class="selector-class">.gz</span></span><br></pre></td></tr></table></figure>
+<h3 id="所需软件包的下载链接"><a href="#所需软件包的下载链接" class="headerlink" title="所需软件包的下载链接"></a>所需软件包的下载链接</h3><p>CentOS7.3下载链接： <a href="http://mirrors.aliyun.com/centos/7.3.1611/isos/x86_64/" target="_blank" rel="noopener">http://mirrors.aliyun.com/centos/7.3.1611/isos/x86_64/</a><br>Apache软件下载链接：<a href="http://httpd.apache.org/download.cgi#apache24" target="_blank" rel="noopener">http://httpd.apache.org/download.cgi#apache24</a><br>APR下载链接：<a href="http://apr.apache.org/download.cgi" target="_blank" rel="noopener">http://apr.apache.org/download.cgi</a><br>APR-util下载链接：<a href="http://apr.apache.org/download.cgi" target="_blank" rel="noopener">http://apr.apache.org/download.cgi</a><br>PHP下载链接：<a href="https://secure.php.net/downloads.php" target="_blank" rel="noopener">https://secure.php.net/downloads.php</a><br>Mariadb下载链接：<a href="https://downloads.mariadb.org/" target="_blank" rel="noopener">https://downloads.mariadb.org/</a><br>Wordpress下载链接：<a href="https://wordpress.org/download/" target="_blank" rel="noopener">https://wordpress.org/download/</a></p>
+<h3 id="编译安装httpd"><a href="#编译安装httpd" class="headerlink" title="编译安装httpd"></a>编译安装httpd</h3><h4 id="安装开发包组及必要的软件包"><a href="#安装开发包组及必要的软件包" class="headerlink" title="安装开发包组及必要的软件包"></a>安装开发包组及必要的软件包</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;centos7</span>: ~<span class="meta">#yum -y groupinstall <span class="string">"development tools"</span></span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: ~<span class="meta">#yum -y install expat-devel pcre-devel openssl-devel</span></span><br></pre></td></tr></table></figure>
+<h4 id="解压httpd、arp、apr-util软件包"><a href="#解压httpd、arp、apr-util软件包" class="headerlink" title="解压httpd、arp、apr-util软件包"></a>解压httpd、arp、apr-util软件包</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root&amp;centos7: ~<span class="selector-id">#cd</span> /usr/local/src/</span><br><span class="line">root&amp;centos7: src<span class="selector-id">#tar</span> vxf apr-<span class="number">1.6</span>.<span class="number">2</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span></span><br><span class="line">root&amp;centos7: src<span class="selector-id">#tar</span> vxf apr-util-<span class="number">1.6</span>.<span class="number">0</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span></span><br><span class="line">root&amp;centos7: src<span class="selector-id">#tar</span> vxf httpd-<span class="number">2.4</span>.<span class="number">27</span><span class="selector-class">.tar</span><span class="selector-class">.bz2</span></span><br></pre></td></tr></table></figure>
+<h4 id="将解压后的apr和apr-util移动到httpd解压后的srclib目录下"><a href="#将解压后的apr和apr-util移动到httpd解压后的srclib目录下" class="headerlink" title="将解压后的apr和apr-util移动到httpd解压后的srclib目录下"></a>将解压后的apr和apr-util移动到httpd解压后的srclib目录下</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;centos7</span>: src<span class="meta">#mv apr-1.6.2 httpd-2.4.27/srclib/apr</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: src<span class="meta">#mv apr-util-1.6.0 httpd-2.4.27/srclib/apr-util</span></span><br></pre></td></tr></table></figure>
+<h4 id="编译安装httpd-1"><a href="#编译安装httpd-1" class="headerlink" title="编译安装httpd"></a>编译安装httpd</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;centos7</span>: src<span class="meta">#cd httpd-2.4.27/</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: httpd<span class="number">-2.4</span><span class="number">.27</span><span class="meta">#./configure --prefix=/app/httpd24 --sysconfdir=/etc/httpd24 --enable-so --enable-ssl --enable-cgi --enable-rewrite --with-zlib--with-pcre --with-included-apr --enable-modules=most --enable-mpms-shared=all --with-mpm=prefork</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: httpd<span class="number">-2.4</span><span class="number">.27</span><span class="meta">#echo $?</span></span><br><span class="line"><span class="number">0</span>	<span class="meta">#只有显示的结果为0时，才代表上一步操作执行成功，才能进行后续操作。</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: httpd<span class="number">-2.4</span><span class="number">.27</span><span class="meta">#make &amp;&amp; make install</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: httpd<span class="number">-2.4</span><span class="number">.27</span><span class="meta">#echo $?</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: httpd<span class="number">-2.4</span><span class="number">.27</span><span class="meta">#ls /app/</span></span><br><span class="line">httpd24	<span class="meta">#编译成功后会在/app目录下生成httpd24目录，/app/目录需自己在编译前先创建好</span></span><br></pre></td></tr></table></figure>
+<h4 id="创建用户、定义环境变量，并启动Apache服务"><a href="#创建用户、定义环境变量，并启动Apache服务" class="headerlink" title="创建用户、定义环境变量，并启动Apache服务"></a>创建用户、定义环境变量，并启动Apache服务</h4><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root&amp;<span class="symbol">centos7:</span> httpd-<span class="number">2.4</span>.<span class="number">27</span><span class="comment">#useradd -r -d /usr/share/httpd24 -s /sbin/nologin apache</span></span><br><span class="line">root&amp;<span class="symbol">centos7:</span> httpd-<span class="number">2.4</span>.<span class="number">27</span><span class="comment">#vim /etc/profile.d/app.sh</span></span><br><span class="line">	export PATH=<span class="regexp">/app/httpd</span>24/bin/<span class="symbol">:/usr/local/mysql/bin/</span><span class="symbol">:</span><span class="variable">$PATH</span></span><br><span class="line">root&amp;<span class="symbol">centos7:</span> httpd-<span class="number">2.4</span>.<span class="number">27</span><span class="comment">#. /etc/profile.d/app.sh</span></span><br><span class="line">root&amp;<span class="symbol">centos7:</span> httpd-<span class="number">2.4</span>.<span class="number">27</span><span class="comment">#apachectl</span></span><br><span class="line">root&amp;<span class="symbol">centos7:</span> httpd-<span class="number">2.4</span>.<span class="number">27</span><span class="comment">#ss -ntl |grep 80</span></span><br><span class="line">LISTEN     <span class="number">0</span>      <span class="number">128</span>         <span class="symbol">:</span><span class="symbol">:</span><span class="symbol">:</span><span class="number">80</span>                      <span class="symbol">:</span><span class="symbol">:</span><span class="symbol">:*</span></span><br></pre></td></tr></table></figure>
+<h3 id="二进制安装mariadb"><a href="#二进制安装mariadb" class="headerlink" title="二进制安装mariadb"></a>二进制安装mariadb</h3><h4 id="安装必要的软件包"><a href="#安装必要的软件包" class="headerlink" title="安装必要的软件包"></a>安装必要的软件包</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">root</span>&amp;<span class="selector-tag">centos7</span>: <span class="selector-tag">httpd-2</span><span class="selector-class">.4</span><span class="selector-class">.27</span><span class="selector-id">#yum</span> <span class="selector-tag">-y</span> <span class="selector-tag">remove</span> <span class="selector-tag">mariadb</span>*</span><br><span class="line"><span class="selector-tag">root</span>&amp;<span class="selector-tag">centos7</span>: <span class="selector-tag">httpd-2</span><span class="selector-class">.4</span><span class="selector-class">.27</span><span class="selector-id">#yum</span> <span class="selector-tag">-y</span> <span class="selector-tag">install</span> <span class="selector-tag">libaio-devel</span></span><br></pre></td></tr></table></figure>
+<h4 id="解压mariadb软件包到指定目录，并创建程序软链接"><a href="#解压mariadb软件包到指定目录，并创建程序软链接" class="headerlink" title="解压mariadb软件包到指定目录，并创建程序软链接"></a>解压mariadb软件包到指定目录，并创建程序软链接</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root&amp;centos7: httpd-<span class="number">2.4</span>.<span class="number">27</span><span class="selector-id">#cd</span> /usr/local/src/</span><br><span class="line">root&amp;centos7: src<span class="selector-id">#tar</span> vxf mariadb-<span class="number">10.2</span>.<span class="number">8</span>-linux-x86_64<span class="selector-class">.tar</span><span class="selector-class">.gz</span> -C /usr/local/</span><br><span class="line">root&amp;centos7: src<span class="selector-id">#cd</span> /usr/local/</span><br><span class="line">root&amp;centos7: local<span class="selector-id">#ln</span> -sv mariadb-<span class="number">10.2</span>.<span class="number">8</span>-linux-x86_64/ mysql</span><br></pre></td></tr></table></figure>
+<h4 id="创建mysql用户账号"><a href="#创建mysql用户账号" class="headerlink" title="创建mysql用户账号"></a>创建mysql用户账号</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root&amp;centos7: <span class="keyword">local</span><span class="comment">#useradd -r -m -d /app/mysqldb -s /sbin/nologin mysql</span></span><br></pre></td></tr></table></figure>
+<h4 id="制作并修改mariadb配置文件-etc-mysql-my-cnf"><a href="#制作并修改mariadb配置文件-etc-mysql-my-cnf" class="headerlink" title="制作并修改mariadb配置文件/etc/mysql/my.cnf"></a>制作并修改mariadb配置文件/etc/mysql/my.cnf</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root&amp;centos7: local<span class="selector-id">#mkdir</span> /etc/mysql/</span><br><span class="line">root&amp;centos7: local<span class="selector-id">#cp</span> /usr/local/mysql/support-files/my-huge<span class="selector-class">.cnf</span> /etc/mysql/my.cnf</span><br><span class="line">root&amp;centos7: local<span class="selector-id">#vim</span> /etc/mysql/my.cnf</span><br><span class="line">	[mysqld]   #[mysqld]下面写入以下三行</span><br><span class="line">	datadir = /app/mysqldb</span><br><span class="line">	innodb_file_per_table = on</span><br><span class="line">	skip_name_resolve = on</span><br></pre></td></tr></table></figure>
+<h4 id="运行mysql-install-db脚本生成系统数据库"><a href="#运行mysql-install-db脚本生成系统数据库" class="headerlink" title="运行mysql_install_db脚本生成系统数据库"></a>运行mysql_install_db脚本生成系统数据库</h4><figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root&amp;centos7: local<span class="comment">#cd /usr/local/mysql/</span></span><br><span class="line">root&amp;centos7: mysql<span class="comment">#scripts/mysql_install_db --datadir=/app/mysqldb --user=mysql</span></span><br><span class="line">root&amp;centos7: mysql<span class="comment">#ls /app/mysqldb/	#脚本执行成功后会在指定目录下生成下列文件</span></span><br><span class="line">aria_log.<span class="number">00000001</span>  ib_buffer_pool  ib_logfile0  mysql             mysql-bin.index  performance_schema</span><br><span class="line">aria_log_control   ibdata1         ib_logfile1  mysql-bin.<span class="number">000001</span>  mysql-bin.<span class="keyword">state</span>  test</span><br></pre></td></tr></table></figure>
+<h4 id="制作启动脚本，并启动mysqld服务"><a href="#制作启动脚本，并启动mysqld服务" class="headerlink" title="制作启动脚本，并启动mysqld服务"></a>制作启动脚本，并启动mysqld服务</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;centos7</span>: mysql<span class="meta">#cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: mysql<span class="meta">#chkconfig --add mysqld</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: mysql<span class="meta">#chkconfig mysqld on</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: mysql<span class="meta">#mkdir /var/log/mariadb/</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: mysql<span class="meta">#touch /var/log/mariadb/mariadb.log</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: mysql<span class="meta">#chown mysql /var/log/mariadb/</span></span><br><span class="line">root<span class="variable">&amp;centos7</span>: mysql<span class="meta">#service mysqld start</span></span><br><span class="line">Starting mysqld (via systemctl):                           [  OK  ]</span><br><span class="line">root<span class="variable">&amp;centos7</span>: mysql<span class="meta">#ss -ntl|grep 3306</span></span><br><span class="line">LISTEN     <span class="number">0</span>      <span class="number">80</span>          :::<span class="number">3306</span>                    :::*</span><br></pre></td></tr></table></figure>
+<h4 id="运行数据库安全初始化脚本"><a href="#运行数据库安全初始化脚本" class="headerlink" title="运行数据库安全初始化脚本"></a>运行数据库安全初始化脚本</h4><figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">root&amp;centos7: mysql<span class="meta">#mysql_secure_installation</span></span><br><span class="line">		……此处省略部分显示内容……</span><br><span class="line">Enter current password <span class="keyword">for</span> root (enter <span class="keyword">for</span> none):  <span class="meta">#此处有回车</span></span><br><span class="line">		……此处省略部分显示内容……</span><br><span class="line"><span class="keyword">Set</span> root password? [Y/n] y</span><br><span class="line"><span class="keyword">New</span> password:  <span class="meta">#输入你的数据库密码</span></span><br><span class="line">Re-enter <span class="keyword">new</span> password:   <span class="meta">#确认密码</span></span><br><span class="line">		……此处省略部分显示内容……</span><br><span class="line">Remove anonymous users? [Y/n] y</span><br><span class="line">		……此处省略部分显示内容……</span><br><span class="line">Disallow root login remotely? [Y/n] n</span><br><span class="line">		……此处省略部分显示内容……</span><br><span class="line">Remove test database <span class="keyword">and</span> access <span class="keyword">to</span> it? [Y/n] y</span><br><span class="line">		……此处省略部分显示内容……</span><br><span class="line">Reload privilege tables now? [Y/n] y</span><br><span class="line">		……此处省略部分显示内容……</span><br></pre></td></tr></table></figure>
+<h4 id="创建blog的数据库，并授权管理用户"><a href="#创建blog的数据库，并授权管理用户" class="headerlink" title="创建blog的数据库，并授权管理用户"></a>创建blog的数据库，并授权管理用户</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">root</span>&amp;<span class="selector-tag">centos7</span>: <span class="selector-tag">mysql</span><span class="selector-id">#mysql</span> <span class="selector-tag">-uroot</span> <span class="selector-tag">-p</span></span><br><span class="line"><span class="selector-tag">Enter</span> <span class="selector-tag">password</span>:   #输入登录数据库的密码</span><br><span class="line"><span class="selector-tag">MariaDB</span> <span class="selector-attr">[(none)]</span>&gt; <span class="selector-tag">CREATE</span> <span class="selector-tag">DATABASE</span> <span class="selector-tag">blogdb</span>;</span><br><span class="line"><span class="selector-tag">Query</span> <span class="selector-tag">OK</span>, 1 <span class="selector-tag">row</span> <span class="selector-tag">affected</span> (0<span class="selector-class">.01</span> <span class="selector-tag">sec</span>)</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">MariaDB</span> <span class="selector-attr">[(none)]</span>&gt; <span class="selector-tag">GRANT</span> <span class="selector-tag">ALL</span> <span class="selector-tag">ON</span> <span class="selector-tag">blogdb</span>.* <span class="selector-tag">TO</span> <span class="selector-tag">bguser</span>@'<span class="keyword">172</span>.<span class="keyword">18</span>.%.%' IDENTIFIED BY <span class="string">"centos"</span>;</span><br><span class="line"><span class="selector-tag">Query</span> <span class="selector-tag">OK</span>, 0 <span class="selector-tag">rows</span> <span class="selector-tag">affected</span> (0<span class="selector-class">.00</span> <span class="selector-tag">sec</span>)</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">MariaDB</span> <span class="selector-attr">[(none)]</span>&gt; <span class="selector-tag">GRANT</span> <span class="selector-tag">ALL</span> <span class="selector-tag">ON</span> <span class="selector-tag">blogdb</span>.* <span class="selector-tag">TO</span> <span class="selector-tag">bguser</span>@'<span class="keyword">localhost</span>' IDENTIFIED BY <span class="string">"centos"</span>;</span><br><span class="line"><span class="selector-tag">Query</span> <span class="selector-tag">OK</span>, 0 <span class="selector-tag">rows</span> <span class="selector-tag">affected</span> (0<span class="selector-class">.00</span> <span class="selector-tag">sec</span>)</span><br><span class="line"><span class="selector-tag">MariaDB</span> <span class="selector-attr">[(none)]</span>&gt; <span class="selector-tag">quit</span></span><br></pre></td></tr></table></figure>
+<h3 id="编译安装php"><a href="#编译安装php" class="headerlink" title="编译安装php"></a>编译安装php</h3><h4 id="安装必要的软将包"><a href="#安装必要的软将包" class="headerlink" title="安装必要的软将包"></a>安装必要的软将包</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;centos7</span>: mysql<span class="meta">#yum -y install libxml2-devel bzip2-devel libmcrypt-devel</span></span><br></pre></td></tr></table></figure>
+<h4 id="解压并编译安装PHP"><a href="#解压并编译安装PHP" class="headerlink" title="解压并编译安装PHP"></a>解压并编译安装PHP</h4><figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">root&amp;centos7:</span> <span class="comment">mysql#cd</span> <span class="comment">/usr/local/src/</span></span><br><span class="line"><span class="comment">root&amp;centos7:</span> <span class="comment">src#tar</span> <span class="comment">vxf</span> <span class="comment">php</span><span class="literal">-</span><span class="comment">7</span><span class="string">.</span><span class="comment">1</span><span class="string">.</span><span class="comment">10</span><span class="string">.</span><span class="comment">tar</span><span class="string">.</span><span class="comment">bz2</span></span><br><span class="line"><span class="comment">root&amp;centos7:</span> <span class="comment">src#cd</span> <span class="comment">php</span><span class="literal">-</span><span class="comment">7</span><span class="string">.</span><span class="comment">1</span><span class="string">.</span><span class="comment">10/</span></span><br><span class="line"><span class="comment">root&amp;centos7:</span> <span class="comment">php</span><span class="literal">-</span><span class="comment">7</span><span class="string">.</span><span class="comment">1</span><span class="string">.</span><span class="comment">10#</span><span class="string">.</span><span class="comment">/configure</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">prefix=/app/php</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">enable</span><span class="literal">-</span><span class="comment">mysqlnd</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">mysqli=mysqlnd</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">openssl</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">pdo</span><span class="literal">-</span><span class="comment">mysql=mysqlnd</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">enable</span><span class="literal">-</span><span class="comment">mbstring</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">freetype</span><span class="literal">-</span><span class="comment">dir</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">jpeg</span><span class="literal">-</span><span class="comment">dir</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">png</span><span class="literal">-</span><span class="comment">dir</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">zlib</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">libxml</span><span class="literal">-</span><span class="comment">dir=/usr</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">enable</span><span class="literal">-</span><span class="comment">xml</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">enable</span><span class="literal">-</span><span class="comment">sockets</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">apxs2=/app/httpd24/bin/apxs</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">mcrypt</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">config</span><span class="literal">-</span><span class="comment">file</span><span class="literal">-</span><span class="comment">path=/etc</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">with</span><span class="literal">-</span><span class="comment">config</span><span class="literal">-</span><span class="comment">file</span><span class="literal">-</span><span class="comment">scan</span><span class="literal">-</span><span class="comment">dir=/etc/php</span><span class="string">.</span><span class="comment">d</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">enable</span><span class="literal">-</span><span class="comment">maintainer</span><span class="literal">-</span><span class="comment">zts</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">disable</span><span class="literal">-</span><span class="comment">fileinfo</span></span><br><span class="line"><span class="comment">root&amp;centos7:</span> <span class="comment">php</span><span class="literal">-</span><span class="comment">7</span><span class="string">.</span><span class="comment">1</span><span class="string">.</span><span class="comment">10#echo</span> <span class="comment">$?</span></span><br><span class="line"><span class="comment">0</span></span><br><span class="line"><span class="comment">root&amp;centos7:</span> <span class="comment">php</span><span class="literal">-</span><span class="comment">7</span><span class="string">.</span><span class="comment">1</span><span class="string">.</span><span class="comment">10#make</span> <span class="comment">&amp;&amp;</span> <span class="comment">make</span> <span class="comment">install</span></span><br><span class="line"><span class="comment">root&amp;centos7:</span> <span class="comment">php</span><span class="literal">-</span><span class="comment">7</span><span class="string">.</span><span class="comment">1</span><span class="string">.</span><span class="comment">10#echo</span> <span class="comment">$?</span></span><br><span class="line"><span class="comment">0</span></span><br></pre></td></tr></table></figure>
+<h4 id="制作并修改相关配置文件，重新启动httpd服务加载PHP模块"><a href="#制作并修改相关配置文件，重新启动httpd服务加载PHP模块" class="headerlink" title="制作并修改相关配置文件，重新启动httpd服务加载PHP模块"></a>制作并修改相关配置文件，重新启动httpd服务加载PHP模块</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root&amp;centos7: php-<span class="number">7.1</span>.<span class="number">10</span><span class="selector-id">#cp</span> php<span class="selector-class">.ini-production</span> /etc/php.ini</span><br><span class="line">root&amp;centos7: php-<span class="number">7.1</span>.<span class="number">10</span><span class="selector-id">#vim</span> /etc/httpd24/httpd.conf</span><br><span class="line">	#文件底加以下两行</span><br><span class="line">	AddType application/x-httpd-php .php</span><br><span class="line">	AddType application/x-httpd-php-source .phps</span><br><span class="line">	#在文件中找到下面字段，在DirectoryIndex后写入index.php</span><br><span class="line">	&lt;IfModule dir_module&gt;</span><br><span class="line">		DirectoryIndex index<span class="selector-class">.php</span> index.html</span><br><span class="line">	&lt;/IfModule&gt;</span><br><span class="line">root&amp;centos7: php-<span class="number">7.1</span>.<span class="number">10</span><span class="selector-id">#apachectl</span> stop		</span><br><span class="line">root&amp;centos7: php-<span class="number">7.1</span>.<span class="number">10</span><span class="selector-id">#apachectl</span> start	</span><br><span class="line">#重新启动Apache服务</span><br></pre></td></tr></table></figure>
+<h3 id="测试数据库连接"><a href="#测试数据库连接" class="headerlink" title="测试数据库连接"></a>测试数据库连接</h3><h4 id="编辑测试文件"><a href="#编辑测试文件" class="headerlink" title="编辑测试文件"></a>编辑测试文件</h4><p><strong>在/app/httpd24/htdocs/index.php文件中写入下面的测试代码，看能否成功连接数据库</strong></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root&amp;centos7: php-<span class="number">7.1</span>.<span class="number">10</span><span class="comment">#vim /app/httpd24/htdocs/index.php</span></span><br><span class="line">	&lt;?php</span><br><span class="line">	<span class="variable">$mysqli</span>=new mysqli(<span class="string">"172.18.172.18"</span>,<span class="string">"bguser"</span>,<span class="string">"centos"</span>);</span><br><span class="line">	<span class="comment">#注意这段代码中的数据库地址、连接数据库的用户和密码一定要写正确</span></span><br><span class="line">	<span class="keyword">if</span>(mysqli_connect_errno())&#123;</span><br><span class="line">			echo <span class="string">"连接数据库失败!"</span>;</span><br><span class="line">	<span class="variable">$mysqli</span>=null;</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">	&#125;</span><br><span class="line">			echo <span class="string">"连接数据库成功!"</span>;</span><br><span class="line">	<span class="variable">$mysqli</span>-&gt;close();</span><br><span class="line">	?&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="使用浏览器测试连接"><a href="#使用浏览器测试连接" class="headerlink" title="使用浏览器测试连接"></a>使用浏览器测试连接</h4><p><strong>用浏览器访问此主机,会看到如下图的提示，则证明连接成功</strong><br><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/34LjKd68Hf.png?imageslim" alt="mark"></p>
+<h4 id="删除测试文件"><a href="#删除测试文件" class="headerlink" title="删除测试文件"></a>删除测试文件</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;centos7</span>: php<span class="number">-7.1</span><span class="number">.10</span><span class="meta">#rm -rf /app/httpd24/htdocs/index.php</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置Wordpress"><a href="#配置Wordpress" class="headerlink" title="配置Wordpress"></a>配置Wordpress</h3><h4 id="解压Wordpress软件包，并将生成的文件移动到httpd的根目录下"><a href="#解压Wordpress软件包，并将生成的文件移动到httpd的根目录下" class="headerlink" title="解压Wordpress软件包，并将生成的文件移动到httpd的根目录下"></a>解压Wordpress软件包，并将生成的文件移动到httpd的根目录下</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root&amp;centos7: php-<span class="number">7.1</span>.<span class="number">10</span><span class="selector-id">#cd</span> /usr/local/src/</span><br><span class="line">root&amp;centos7: src<span class="selector-id">#tar</span> vxf wordpress-<span class="number">4.8</span>.<span class="number">1</span>-zh_CN<span class="selector-class">.tar</span><span class="selector-class">.gz</span></span><br><span class="line">root&amp;centos7: src<span class="selector-id">#mv</span> wordpress<span class="comment">/* /app/httpd24/htdocs/</span></span><br></pre></td></tr></table></figure>
+<h4 id="制作和编辑wordpress的配置文件"><a href="#制作和编辑wordpress的配置文件" class="headerlink" title="制作和编辑wordpress的配置文件"></a>制作和编辑wordpress的配置文件</h4><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">root</span><span class="selector-tag">&amp;</span><span class="selector-tag">centos7</span>: <span class="selector-tag">src</span><span class="selector-id">#cd</span> /<span class="selector-tag">app</span>/<span class="selector-tag">httpd24</span>/<span class="selector-tag">htdocs</span></span><br><span class="line"><span class="selector-tag">root</span><span class="selector-tag">&amp;</span><span class="selector-tag">centos7</span>: <span class="selector-tag">htdocs</span><span class="selector-id">#cp</span> <span class="selector-tag">wp-config-sample</span><span class="selector-class">.php</span> <span class="selector-tag">wp-config</span><span class="selector-class">.php</span></span><br><span class="line"><span class="selector-tag">root</span><span class="selector-tag">&amp;</span><span class="selector-tag">centos7</span>: <span class="selector-tag">htdocs</span><span class="selector-id">#vim</span> <span class="selector-tag">wp-config</span><span class="selector-class">.php</span></span><br><span class="line">	<span class="comment">// ** MySQL 设置 - 具体信息来自您正在使用的主机 ** //</span></span><br><span class="line">	<span class="comment">/** WordPress数据库的名称 */</span></span><br><span class="line">	<span class="selector-tag">define</span>(<span class="string">'DB_NAME'</span>, <span class="string">'blogdb'</span>);</span><br><span class="line">	#此处填写数据库名称，如：<span class="selector-tag">blogdb</span></span><br><span class="line">	<span class="comment">/** MySQL数据库用户名 */</span></span><br><span class="line">	<span class="selector-tag">define</span>(<span class="string">'DB_USER'</span>, <span class="string">'bguser'</span>);</span><br><span class="line">	#此处填写连接数据库的用户名，如<span class="selector-pseudo">:bguser</span></span><br><span class="line">	<span class="comment">/** MySQL数据库密码 */</span></span><br><span class="line">	<span class="selector-tag">define</span>(<span class="string">'DB_PASSWORD'</span>, <span class="string">'centos'</span>);</span><br><span class="line">	#连接数据库的用户密码,如<span class="selector-pseudo">:centos</span></span><br><span class="line">	<span class="comment">/** MySQL主机 */</span></span><br><span class="line">	<span class="selector-tag">define</span>(<span class="string">'DB_HOST'</span>, <span class="string">'localhost'</span>);</span><br><span class="line">#以上填写的信息对应的是先前创建数据库时的信息</span><br></pre></td></tr></table></figure>
+<h4 id="浏览器访问此主机，完成最后设置"><a href="#浏览器访问此主机，完成最后设置" class="headerlink" title="浏览器访问此主机，完成最后设置"></a>浏览器访问此主机，完成最后设置</h4><p><strong>填写完下图中的用户信息后，点击安装WordPress</strong><br><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/7B5aDc1Fh6.png?imageslim" alt="mark"><br><strong>点击登录</strong><br><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/IieJC2JmDe.png?imageslim" alt="mark"><br><strong>输入用户和密码</strong><br><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/c96i6fDHc6.png?imageslim" alt="mark"><br><strong>进入到下列主页面</strong><br><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/5Lhf0kIK7c.png?imageslim" alt="mark"><br><strong>到此安装就完成了，Wordpress后面的使用就交由朋友们去自行发掘了，在此就不多做介绍了。</strong><br><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/DEELg38ljd.png?imageslim" alt="mark"></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">使用WordPress搭建基于LAMP架构的博客平台</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">执念</a></p>
+        <p><span>发布时间:</span>2017-12-22, 01:23:55</p>
+        <p><span>最后更新:</span>2018-04-23, 20:50:49</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/" title="使用WordPress搭建基于LAMP架构的博客平台">http://subtraction.tech/WEB/使用WordPress搭建基于LAMP架构的博客平台/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://subtraction.tech/WEB/使用WordPress搭建基于LAMP架构的博客平台/　　作者: 执念" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/Command/Iptables使用方法/">
+                    Iptables使用方法
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">
+                    验证跨网段通信中，目标主机的网关配置对数据包接收的影响
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#需要准备的软件包"><span class="toc-number">2.</span> <span class="toc-text">需要准备的软件包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#所需软件包的下载链接"><span class="toc-number">3.</span> <span class="toc-text">所需软件包的下载链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译安装httpd"><span class="toc-number">4.</span> <span class="toc-text">编译安装httpd</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装开发包组及必要的软件包"><span class="toc-number">4.1.</span> <span class="toc-text">安装开发包组及必要的软件包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解压httpd、arp、apr-util软件包"><span class="toc-number">4.2.</span> <span class="toc-text">解压httpd、arp、apr-util软件包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#将解压后的apr和apr-util移动到httpd解压后的srclib目录下"><span class="toc-number">4.3.</span> <span class="toc-text">将解压后的apr和apr-util移动到httpd解压后的srclib目录下</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#编译安装httpd-1"><span class="toc-number">4.4.</span> <span class="toc-text">编译安装httpd</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建用户、定义环境变量，并启动Apache服务"><span class="toc-number">4.5.</span> <span class="toc-text">创建用户、定义环境变量，并启动Apache服务</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二进制安装mariadb"><span class="toc-number">5.</span> <span class="toc-text">二进制安装mariadb</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装必要的软件包"><span class="toc-number">5.1.</span> <span class="toc-text">安装必要的软件包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解压mariadb软件包到指定目录，并创建程序软链接"><span class="toc-number">5.2.</span> <span class="toc-text">解压mariadb软件包到指定目录，并创建程序软链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建mysql用户账号"><span class="toc-number">5.3.</span> <span class="toc-text">创建mysql用户账号</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#制作并修改mariadb配置文件-etc-mysql-my-cnf"><span class="toc-number">5.4.</span> <span class="toc-text">制作并修改mariadb配置文件/etc/mysql/my.cnf</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#运行mysql-install-db脚本生成系统数据库"><span class="toc-number">5.5.</span> <span class="toc-text">运行mysql_install_db脚本生成系统数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#制作启动脚本，并启动mysqld服务"><span class="toc-number">5.6.</span> <span class="toc-text">制作启动脚本，并启动mysqld服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#运行数据库安全初始化脚本"><span class="toc-number">5.7.</span> <span class="toc-text">运行数据库安全初始化脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建blog的数据库，并授权管理用户"><span class="toc-number">5.8.</span> <span class="toc-text">创建blog的数据库，并授权管理用户</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译安装php"><span class="toc-number">6.</span> <span class="toc-text">编译安装php</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装必要的软将包"><span class="toc-number">6.1.</span> <span class="toc-text">安装必要的软将包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解压并编译安装PHP"><span class="toc-number">6.2.</span> <span class="toc-text">解压并编译安装PHP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#制作并修改相关配置文件，重新启动httpd服务加载PHP模块"><span class="toc-number">6.3.</span> <span class="toc-text">制作并修改相关配置文件，重新启动httpd服务加载PHP模块</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试数据库连接"><span class="toc-number">7.</span> <span class="toc-text">测试数据库连接</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#编辑测试文件"><span class="toc-number">7.1.</span> <span class="toc-text">编辑测试文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用浏览器测试连接"><span class="toc-number">7.2.</span> <span class="toc-text">使用浏览器测试连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删除测试文件"><span class="toc-number">7.3.</span> <span class="toc-text">删除测试文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置Wordpress"><span class="toc-number">8.</span> <span class="toc-text">配置Wordpress</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#解压Wordpress软件包，并将生成的文件移动到httpd的根目录下"><span class="toc-number">8.1.</span> <span class="toc-text">解压Wordpress软件包，并将生成的文件移动到httpd的根目录下</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#制作和编辑wordpress的配置文件"><span class="toc-number">8.2.</span> <span class="toc-text">制作和编辑wordpress的配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#浏览器访问此主机，完成最后设置"><span class="toc-number">8.3.</span> <span class="toc-text">浏览器访问此主机，完成最后设置</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-5 i,
+        .toc-level-5 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"使用WordPress搭建基于LAMP架构的博客平台　| Learning - 知也无涯　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2161788';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/Command/Iptables使用方法/" title="上一篇: Iptables使用方法">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/" title="下一篇: 验证跨网段通信中，目标主机的网关配置对数据包接收的影响">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/WEB/Keepalived实现Nginx反代的高可用/">Keepalived实现Nginx反代的高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Iptables使用方法/">Iptables使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">使用WordPress搭建基于LAMP架构的博客平台</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">验证跨网段通信中，目标主机的网关配置对数据包接收的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/DataBase/SQL语句基础指令语法/">SQL语句基础指令语法</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/PXE自动化安装centos6和centos7/">PXE自动化安装centos6和centos7</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/SSH端口转发/">SSH端口转发</a></li><li class="post-list-item"><a class="post-list-link" href="/Security/搭建私有CA/">搭建私有CA</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/制作一个简单的小Linux系统/">制作一个简单的小Linux系统</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/CentOS-7-配置网络组/">CentOS 7 配置网络组</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/grep和正则表达式/">grep和正则表达式</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/多网卡绑定配置-bonding/">多网卡绑定配置-bonding</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux文件查找利器-locate-find/">Linux文件查找利器 locate & find</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/CentOS-7搭建yum服务器/">CentOS7搭建yum服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/vim使用手册/">vim使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux帮助使用方法/">Linux帮助使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7-3-从下载到安装/">CentOS7.3从下载到安装</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 执念
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

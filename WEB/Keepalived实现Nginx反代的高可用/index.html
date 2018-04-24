@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="执念" />
+
+
+
+<meta name="description" content="实验前的准备工作本次实验使用四台centos7主机来搭建实验环境，实现Nginx的高可用解决方案。由于集群环境对时间要求严格，所以在实验开始前请务必先在四台主机上完成以下四项准备工作，特别是时间的同步。 具体的网络拓扑结构请看下图：">
+<meta name="keywords" content="HA,Nginx,Keepalived">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Keepalived实现Nginx反代的高可用">
+<meta property="og:url" content="http://subtraction.tech/WEB/Keepalived实现Nginx反代的高可用/index.html">
+<meta property="og:site_name" content="Learning - 知也无涯">
+<meta property="og:description" content="实验前的准备工作本次实验使用四台centos7主机来搭建实验环境，实现Nginx的高可用解决方案。由于集群环境对时间要求严格，所以在实验开始前请务必先在四台主机上完成以下四项准备工作，特别是时间的同步。 具体的网络拓扑结构请看下图：">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/fFlEiF35Bf.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/g5lhbbFhBb.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/LA25aiddhd.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/6CbEb1b3A1.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/a7mhfm9BEh.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/KFHgfhdijK.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/8dGH723gc4.png?imageslim">
+<meta property="og:updated_time" content="2018-04-24T03:41:13.335Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Keepalived实现Nginx反代的高可用">
+<meta name="twitter:description" content="实验前的准备工作本次实验使用四台centos7主机来搭建实验环境，实现Nginx的高可用解决方案。由于集群环境对时间要求严格，所以在实验开始前请务必先在四台主机上完成以下四项准备工作，特别是时间的同步。 具体的网络拓扑结构请看下图：">
+<meta name="twitter:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/fFlEiF35Bf.png?imageslim">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Learning - 知也无涯" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/logo.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-corner-indicator.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Keepalived实现Nginx反代的高可用 | Learning - 知也无涯</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?fb5cb1201030123c8ccc4051f4e759fd";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/sxy.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">执念</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CA/">CA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/">Gateway</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HA/">HA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Iptables/">Iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keepalived/">Keepalived</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PXE/">PXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RE/">RE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSH/">SSH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/find/">find</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/locate/">locate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/man/">man</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://www.ilinux.io/">ilinux.io</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于系统架构</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">执念</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/sxy.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">执念</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Keepalived实现Nginx反代的高可用" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/WEB/Keepalived实现Nginx反代的高可用/" class="article-date">
+      <time datetime="2018-01-21T15:16:04.000Z" itemprop="datePublished">2018-01-21</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Keepalived实现Nginx反代的高可用
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/WEB/">WEB</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HA/">HA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Keepalived/">Keepalived</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Nginx/">Nginx</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<h3 id="实验前的准备工作"><a href="#实验前的准备工作" class="headerlink" title="实验前的准备工作"></a>实验前的准备工作</h3><p>本次实验使用四台centos7主机来搭建实验环境，实现Nginx的高可用解决方案。由于集群环境对时间要求严格，所以在实验开始前请务必先在四台主机上完成以下四项准备工作，特别是时间的同步。</p>
+<p><strong>具体的网络拓扑结构请看下图：</strong></p>
+<a id="more"></a>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/fFlEiF35Bf.png?imageslim" alt="mark"></p>
+<h4 id="时间同步"><a href="#时间同步" class="headerlink" title="时间同步"></a>时间同步</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root&amp;proxy1: ~#yum -y install ntpdate ntp</span><br><span class="line">root&amp;proxy1: ~#ntpdate 172.18.0.1	#和时钟服务器同步时间</span><br><span class="line">30 Oct 10:10:10 ntpdate[2148]: <span class="keyword">step</span> time<span class="built_in"> server </span>172.18.0.1 offset -28792.799544 sec</span><br><span class="line"><span class="comment">#只有时间同步完成后，才能进行此步骤；</span></span><br><span class="line">root&amp;proxy1: ~#vim /etc/chrony.conf</span><br><span class="line"><span class="comment"># These servers were defined in the installation:</span></span><br><span class="line">server 172.18.0.1 iburst	#绑定时钟服务器，时钟服务器也可以来自网络，谷歌就可查到；</span><br><span class="line">server 0.centos.pool.ntp.org iburst</span><br><span class="line">server 1.centos.pool.ntp.org iburst</span><br><span class="line">		…………此处省略部分显示内容…………</span><br><span class="line">root&amp;proxy1: ~#systemctl <span class="builtin-name">enable</span> chronyd</span><br><span class="line">root&amp;proxy1: ~#systemctl start chronyd</span><br></pre></td></tr></table></figure>
+<h4 id="关闭防火墙和SELinux"><a href="#关闭防火墙和SELinux" class="headerlink" title="关闭防火墙和SELinux"></a>关闭防火墙和SELinux</h4><p><strong>CentOS 7关闭防火墙的方法</strong><br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root&amp;proxy1: ~<span class="selector-id">#systemctl</span> disable firewalld.service</span><br><span class="line">root&amp;proxy1: ~<span class="selector-id">#systemctl</span> stop firewalld.service</span><br><span class="line">root&amp;proxy1: ~<span class="selector-id">#iptables</span> -F</span><br></pre></td></tr></table></figure></p>
+<p><strong>关闭SElinux策略</strong><br><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;proxy1: ~# sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config</span></span><br><span class="line"><span class="section">root&amp;proxy1: ~# grep SELINUX=disabled /etc/selinux/config</span></span><br><span class="line"><span class="comment">#确定SELINUX=disabled，已经将SElinux策略禁用</span></span><br><span class="line">SELINUX=disabled</span><br><span class="line"><span class="section">root&amp;proxy1: ~# setenforce 0</span></span><br><span class="line"><span class="comment">#设置SELinux当前状态为Permissive</span></span><br><span class="line"><span class="section">root&amp;proxy1: ~# getenforce</span></span><br><span class="line"><span class="comment">#获取SELinux当前状态</span></span><br><span class="line">Permissive</span><br></pre></td></tr></table></figure></p>
+<h4 id="做名称解析"><a href="#做名称解析" class="headerlink" title="做名称解析"></a>做名称解析</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root&amp;proxy1: ~<span class="selector-id">#hostnamectl</span> set-hostname proxy1	#设置主机名的命令，执行exit命令后再进入生效</span><br><span class="line">root&amp;proxy1: ~<span class="selector-id">#vim</span> /etc/hosts</span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>   localhost localhost<span class="selector-class">.localdomain</span> localhost4 localhost4.localdomain4</span><br><span class="line">::<span class="number">1</span>         localhost localhost<span class="selector-class">.localdomain</span> localhost6 localhost6.localdomain6</span><br><span class="line"><span class="number">172.18</span>.<span class="number">255.254</span>  proxy1</span><br><span class="line"><span class="number">172.18</span>.<span class="number">172.18</span>   proxy2</span><br><span class="line"><span class="number">172.18</span>.<span class="number">73.33</span>    web1</span><br><span class="line"><span class="number">172.18</span>.<span class="number">73.11</span>    web2</span><br><span class="line"></span><br><span class="line">root&amp;proxy1: ~<span class="selector-id">#ping</span> proxy2	#完成名称解析后可以直接通过主机名ping通对方</span><br><span class="line">root&amp;proxy1: ~<span class="selector-id">#ping</span> web1</span><br><span class="line">root&amp;proxy1: ~<span class="selector-id">#ping</span> web2</span><br></pre></td></tr></table></figure>
+<h4 id="实现基于key的认证"><a href="#实现基于key的认证" class="headerlink" title="实现基于key的认证"></a>实现基于key的认证</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">root</span>&amp;<span class="selector-tag">proxy1</span>: ~<span class="selector-id">#cd</span> ~</span><br><span class="line"><span class="selector-tag">root</span>&amp;<span class="selector-tag">proxy1</span>: ~<span class="selector-id">#ssh-keygen</span>	#生成秘钥的命令。</span><br><span class="line"><span class="selector-tag">root</span>&amp;<span class="selector-tag">proxy1</span>: ~<span class="selector-id">#cd</span> <span class="selector-class">.ssh</span></span><br><span class="line"><span class="selector-tag">root</span>&amp;<span class="selector-tag">proxy1</span>: <span class="selector-class">.ssh</span><span class="selector-id">#ssh-copy-id</span> <span class="selector-tag">-i</span> <span class="selector-tag">id_rsa</span><span class="selector-class">.pub</span> <span class="selector-tag">proxy2</span>:	#将公钥文件发送给<span class="selector-tag">proxy2</span>；</span><br><span class="line"><span class="selector-tag">root</span>&amp;<span class="selector-tag">proxy1</span>: <span class="selector-class">.ssh</span><span class="selector-id">#ssh</span> <span class="selector-tag">proxy2</span></span><br><span class="line"><span class="selector-tag">Last</span> <span class="selector-tag">login</span>: <span class="selector-tag">Mon</span> <span class="selector-tag">Oct</span> 30 18<span class="selector-pseudo">:07</span><span class="selector-pseudo">:57</span> 2017 <span class="selector-tag">from</span> 172<span class="selector-class">.18</span><span class="selector-class">.10</span><span class="selector-class">.43</span></span><br><span class="line"><span class="selector-tag">root</span>&amp;<span class="selector-tag">proxy2</span>: ~#	#完成基于<span class="selector-tag">key</span>的认证后可以不需要输入密码，直接连接对方主机</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="主代理proxy1的配置"><a href="#主代理proxy1的配置" class="headerlink" title="主代理proxy1的配置"></a>主代理proxy1的配置</h3><p><strong>Note：运行Keepalived服务需要网卡支持多播；ip a 会有MULTICAST字样</strong></p>
+<h4 id="安装所需的软件包"><a href="#安装所需的软件包" class="headerlink" title="安装所需的软件包"></a>安装所需的软件包</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;proxy1</span>: ~<span class="meta">#yum -y install keepalived nginx psmisc mailx</span></span><br></pre></td></tr></table></figure>
+<h4 id="定义通知脚本"><a href="#定义通知脚本" class="headerlink" title="定义通知脚本"></a>定义通知脚本</h4><p>此脚本的作用是在Keepalived服务发生故障时，以邮件的方式通知管理员。</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">root&amp;proxy1</span>: ~#vim /etc/keepalived/notify.sh</span><br><span class="line"></span><br><span class="line">#!/bin/bash</span><br><span class="line">contact='root@localhost'</span><br><span class="line">notify() &#123;</span><br><span class="line">        mailsubject="$(hostname) to be $1, vip floating"</span><br><span class="line">        mailbody="$(date +'%F %T'): vrrp transition, $(hostname) changed to be $1"</span><br><span class="line">        echo "$mailbody" | mail -s "$mailsubject" $contact</span><br><span class="line">&#125;</span><br><span class="line">case $1 in</span><br><span class="line"><span class="attribute">master)</span></span><br><span class="line">        notify master</span><br><span class="line">        ;;</span><br><span class="line"><span class="attribute">backup)</span></span><br><span class="line">        notify backup</span><br><span class="line">        ;;</span><br><span class="line"><span class="attribute">fault)</span></span><br><span class="line">        notify fault</span><br><span class="line">        ;;</span><br><span class="line">*)</span><br><span class="line">        echo "Usage: $(basename $0) &#123;master|backup|fault&#125;"</span><br><span class="line">        exit 1</span><br><span class="line">        ;;</span><br><span class="line"><span class="attribute">esac</span></span><br><span class="line"><span class="attribute"></span></span><br><span class="line"><span class="attribute">root&amp;proxy1</span>: ~#chmod +x /etc/keepalived/notify.sh</span><br><span class="line"><span class="attribute">root&amp;proxy1</span>: ~#scp /etc/keepalived/notify.sh proxy2:/etc/keepalived/</span><br></pre></td></tr></table></figure>
+<h4 id="定义Keepalived的日志存储"><a href="#定义Keepalived的日志存储" class="headerlink" title="定义Keepalived的日志存储"></a>定义Keepalived的日志存储</h4><p>定义Keepalived的日志存储，有利于在发生故障后为排错提供参考数据；</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;proxy1</span>: ~<span class="meta">#vim /etc/sysconfig/keepalived</span></span><br><span class="line">KEEPALIVED_OPTIONS=<span class="string">"-D -S 2"</span></span><br><span class="line">root<span class="variable">&amp;proxy1</span>: ~<span class="meta">#vim /etc/rsyslog.conf</span></span><br><span class="line">local2.*                                             <span class="meta-keyword">/var/</span>log/keepalived.log</span><br><span class="line">root<span class="variable">&amp;proxy1</span>: ~<span class="meta">#systemctl restart rsyslog</span></span><br><span class="line">root<span class="variable">&amp;proxy1</span>: ~<span class="meta">#systemctl restart keepalived</span></span><br></pre></td></tr></table></figure>
+<h4 id="配置Keepalived服务"><a href="#配置Keepalived服务" class="headerlink" title="配置Keepalived服务"></a>配置Keepalived服务</h4><p>Keepalived服务是一个基于vrrp协议的服务，主要用于实现集群的高可用性，更多关于vrrp协议的知识可以查看《vrrp技术白皮书》。</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">root&amp;proxy1</span>: ~#vim /etc/keepalived/keepalived.conf</span><br><span class="line"></span><br><span class="line">! Configuration File for keepalived</span><br><span class="line"></span><br><span class="line">global_defs &#123;		#全局配置</span><br><span class="line">   notification_email &#123;	#定义收邮件的邮箱</span><br><span class="line">	 <span class="attribute">root@localhost</span></span><br><span class="line">	 sxy2475@gmail.com</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   notification_email_from proxy1@localhost	#定义发邮件的邮箱</span><br><span class="line">   smtp_server 127.0.0.1	#定义邮件服务器的地址</span><br><span class="line">   smtp_connect_timeout 30	#邮件的超时时长</span><br><span class="line">   router_id proxy1		#ID对应主机名</span><br><span class="line">   vrrp_mcast_group4	224.111.111.111	#定义vrrp协议使用的多播地址</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_script chk_down &#123;	#用于控制Keepalived优先级的脚本</span><br><span class="line">	script "[[ -f /etc/keepalived/down ]] &amp;&amp; exit 1 || exit 0"</span><br><span class="line">	interval 1    #通过每秒检测一次/etc/keepalived/down文件是否存在，来控制服务优先级。</span><br><span class="line">	weight -20    #文件存在优先级-20，主要用于服务调试。</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_script chk_nginx &#123;	#检查Nginx反代存活状态的脚本</span><br><span class="line">		script "killall -0 nginx &amp;&gt; /dev/null &amp;&amp; exit 0 || exit 1"	#yum install psmisc -y</span><br><span class="line">		interval 1</span><br><span class="line">		weight -20   #定时通过killall命令发送0信号检测Nginx服务是否还存活。</span><br><span class="line">		fall 3   #检测到三次服务不存活就主动下调优先级</span><br><span class="line">		rise 3   #检测到三次服务存活就主动恢复优先级</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_1 &#123;	#虚拟路由器的配置</span><br><span class="line">	state MASTER   #此处定义了设备的主备关系，此处为MASTER，另一台主机的此处就需设为BACKUP。</span><br><span class="line">	interface ens32	  #对外接口的网卡名</span><br><span class="line">	virtual_router_id 88	#定义虚拟路由器的编号，同一组设备需要编号一致。</span><br><span class="line">	priority 100	#优先级编号，主设备的优先级要高于从设备；</span><br><span class="line">	advert_int 1	#发送公告的间隔时间；1秒</span><br><span class="line">	authentication &#123;</span><br><span class="line">		auth_type PASS</span><br><span class="line">		auth_pass 8poTWQ==	#主备通信的加密口令；八位以内随机数；</span><br><span class="line">	&#125;</span><br><span class="line">	virtual_ipaddress &#123;		#定义VIP的地址，此地址会自动绑定在优先级高的设备上，接收用户的请求；</span><br><span class="line">		<span class="attribute">172.18.22.22/16</span></span><br><span class="line">	&#125;</span><br><span class="line">	#以下几项是对上面脚本的调用；</span><br><span class="line">	notify_master	"/etc/keepalived/notify.sh master"</span><br><span class="line">	notify_backup	"/etc/keepalived/notify.sh backup"</span><br><span class="line">	notify_fault	"/etc/keepalived/notify.sh fault"</span><br><span class="line">	track_script &#123;</span><br><span class="line">		chk_down	#调用chk_down脚本</span><br><span class="line">		chk_nginx   #调用chk_nginx脚本</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">root&amp;proxy1</span>: ~#systemctl start keepalived	#启动Keepalived服务</span><br></pre></td></tr></table></figure>
+<h4 id="配置Nginx的反向代理"><a href="#配置Nginx的反向代理" class="headerlink" title="配置Nginx的反向代理"></a>配置Nginx的反向代理</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;proxy1</span>: ~<span class="meta">#vim /etc/nginx/nginx.conf</span></span><br><span class="line"><span class="class">http </span>&#123;</span><br><span class="line">		……此处省略部分显示内容……</span><br><span class="line">	upstream <span class="class">websrvs </span>&#123;              <span class="meta">#需定义于http字段</span></span><br><span class="line">	    server <span class="number">172.18</span><span class="number">.73</span><span class="number">.33</span>:<span class="number">80</span> weight=<span class="number">1</span>;   <span class="meta">#后端的被代理服务器地址，以及调度的权重。</span></span><br><span class="line">        server <span class="number">172.18</span><span class="number">.73</span><span class="number">.11</span>:<span class="number">80</span> weight=<span class="number">1</span>;</span><br><span class="line">        server <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8000</span> backup;   <span class="meta">#sorry_server的地址，用于后端服务器都挂掉时。</span></span><br><span class="line">     &#125;</span><br><span class="line">		……此处省略部分显示内容……</span><br><span class="line">&#125;</span><br><span class="line"><span class="class">server </span>&#123;</span><br><span class="line">        listen <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8000</span> ;    <span class="meta">#定义sorry_server监听的端口以及主目录所在路径；</span></span><br><span class="line">        root         <span class="meta-keyword">/usr/</span>share<span class="meta-keyword">/nginx/</span>html;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class">server </span>&#123;</span><br><span class="line">		……此处省略部分显示内容……</span><br><span class="line">	location <span class="class">/ &#123;	#需要定义于server字段</span></span><br><span class="line"><span class="class">		proxy_pass http:<span class="comment">//websrvs;     #访问本机web服务的"/"时向后调度的组</span></span></span><br><span class="line"><span class="class">	&#125;</span></span><br><span class="line"><span class="class">				……此处省略部分显示内容……</span></span><br><span class="line"><span class="class">&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">root<span class="variable">&amp;proxy1</span>: ~#nginx -t</span></span><br><span class="line"><span class="class">root<span class="variable">&amp;proxy1</span>: ~#echo sorry_server1 &gt; <span class="meta-keyword">/usr/</span>share<span class="meta-keyword">/nginx/</span>html/index.html</span></span><br><span class="line"><span class="class">root<span class="variable">&amp;proxy1</span>: ~#nginx</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="备用代理proxy2的配置"><a href="#备用代理proxy2的配置" class="headerlink" title="备用代理proxy2的配置"></a>备用代理proxy2的配置</h3><h4 id="安装所需的软件包-1"><a href="#安装所需的软件包-1" class="headerlink" title="安装所需的软件包"></a>安装所需的软件包</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;proxy2</span>: ~<span class="meta">#yum -y install keepalived nginx psmisc mailx</span></span><br></pre></td></tr></table></figure>
+<h4 id="定义Keepalived的日志存储-1"><a href="#定义Keepalived的日志存储-1" class="headerlink" title="定义Keepalived的日志存储"></a>定义Keepalived的日志存储</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;proxy2</span>: ~<span class="meta">#vim /etc/sysconfig/keepalived</span></span><br><span class="line">KEEPALIVED_OPTIONS=<span class="string">"-D -S 2"</span></span><br><span class="line">root<span class="variable">&amp;proxy2</span>: ~<span class="meta">#vim /etc/rsyslog.conf</span></span><br><span class="line">local2.*                                           <span class="meta-keyword">/var/</span>log/keepalived.log</span><br><span class="line">root<span class="variable">&amp;proxy2</span>: ~<span class="meta">#systemctl restart rsyslog</span></span><br><span class="line">root<span class="variable">&amp;proxy2</span>: ~<span class="meta">#systemctl restart keepalived</span></span><br></pre></td></tr></table></figure>
+<h4 id="配置Keepalived服务-1"><a href="#配置Keepalived服务-1" class="headerlink" title="配置Keepalived服务"></a>配置Keepalived服务</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">root&amp;proxy1: ~#vim /etc/keepalived/keepalived.conf</span><br><span class="line">! Configuration File <span class="keyword">for</span> keepalived</span><br><span class="line"></span><br><span class="line">global_defs &#123;		</span><br><span class="line">   notification_email &#123;</span><br><span class="line">	 root@localhost</span><br><span class="line">	 sxy2475@gmail.com</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   notification_email_from proxy2@localhost	</span><br><span class="line">   smtp_server 127.0.0.1	</span><br><span class="line">   smtp_connect_timeout 30	</span><br><span class="line">   router_id proxy2		#ID对应主机名</span><br><span class="line">   vrrp_mcast_group4	224.111.111.111	#两个设备多播地址要相同；</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_script chk_down &#123;	</span><br><span class="line"><span class="built_in">	script </span><span class="string">"[[ -f /etc/keepalived/down ]] &amp;&amp; exit 1 || exit 0"</span></span><br><span class="line">		interval 1</span><br><span class="line">		weight -20</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_script chk_nginx &#123;	</span><br><span class="line"><span class="built_in">	script </span><span class="string">"killall -0 nginx &amp;&gt; /dev/null &amp;&amp; exit 0 || exit 1"</span>	</span><br><span class="line">		interval 1</span><br><span class="line">		weight -20</span><br><span class="line">		fall 3</span><br><span class="line">		rise 3</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">	state BACKUP      #此设备为BACKUP </span><br><span class="line"><span class="built_in">	interface </span>ens32	   </span><br><span class="line">	virtual_router_id 88	#定义虚拟路由器的编号</span><br><span class="line">	priority 90	    #优先级编号，要低于MASTERT设备；</span><br><span class="line">	advert_int 1	</span><br><span class="line">	authentication &#123;</span><br><span class="line">		auth_type PASS</span><br><span class="line">		auth_pass <span class="attribute">8poTWQ</span>==	#两个设备要口令相同</span><br><span class="line">	&#125;</span><br><span class="line">	virtual_ipaddress &#123;		#定义VIP的地址</span><br><span class="line">		172.18.22.22/16</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	notify_master	<span class="string">"/etc/keepalived/notify.sh master"</span></span><br><span class="line">	notify_backup	<span class="string">"/etc/keepalived/notify.sh backup"</span></span><br><span class="line">	notify_fault	<span class="string">"/etc/keepalived/notify.sh fault"</span></span><br><span class="line">	track_script &#123;</span><br><span class="line">		chk_down	</span><br><span class="line">		chk_nginx</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">root&amp;proxy2: ~#systemctl start keepalived</span><br></pre></td></tr></table></figure>
+<h4 id="配置备用的Nginx反向代理"><a href="#配置备用的Nginx反向代理" class="headerlink" title="配置备用的Nginx反向代理"></a>配置备用的Nginx反向代理</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;proxy2</span>: ~<span class="meta">#vim /etc/nginx/nginx.conf</span></span><br><span class="line"><span class="class">http </span>&#123;</span><br><span class="line">		…………</span><br><span class="line">	upstream <span class="class">websrvs </span>&#123;	</span><br><span class="line">		server <span class="number">172.18</span><span class="number">.73</span><span class="number">.33</span>:<span class="number">80</span> weight=<span class="number">1</span>;</span><br><span class="line">        server <span class="number">172.18</span><span class="number">.73</span><span class="number">.11</span>:<span class="number">80</span> weight=<span class="number">1</span>;</span><br><span class="line">        server <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8000</span> backup;</span><br><span class="line">	&#125;</span><br><span class="line">		…………</span><br><span class="line">&#125;</span><br><span class="line"><span class="class">server </span>&#123;</span><br><span class="line">        listen <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8000</span> ;</span><br><span class="line">        root         <span class="meta-keyword">/usr/</span>share<span class="meta-keyword">/nginx/</span>html;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class">server </span>&#123;</span><br><span class="line">		…………</span><br><span class="line">	location <span class="class">/ &#123;	</span></span><br><span class="line"><span class="class">		proxy_pass http:<span class="comment">//websrvs;</span></span></span><br><span class="line"><span class="class">	&#125;</span></span><br><span class="line"><span class="class">					…………</span></span><br><span class="line"><span class="class">&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">root<span class="variable">&amp;proxy2</span>: ~#nginx -t</span></span><br><span class="line"><span class="class">root<span class="variable">&amp;proxy2</span>: ~#echo sorry_server2 &gt; <span class="meta-keyword">/usr/</span>share<span class="meta-keyword">/nginx/</span>html/index.html</span></span><br><span class="line"><span class="class">root<span class="variable">&amp;proxy2</span>: ~#nginx</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="后端被代理服务器web1的配置"><a href="#后端被代理服务器web1的配置" class="headerlink" title="后端被代理服务器web1的配置"></a>后端被代理服务器web1的配置</h3><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;web1</span>: ~<span class="meta">#yum -y install nginx</span></span><br><span class="line">root<span class="variable">&amp;web1</span>: ~<span class="meta">#echo nginx web1 &gt; /usr/share/nginx/html/index.html</span></span><br><span class="line">root<span class="variable">&amp;web1</span>: ~<span class="meta">#nginx</span></span><br></pre></td></tr></table></figure>
+<h3 id="后端被代理服务器web2的配置"><a href="#后端被代理服务器web2的配置" class="headerlink" title="后端被代理服务器web2的配置"></a>后端被代理服务器web2的配置</h3><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;web2</span>: ~<span class="meta">#yum -y install nginx</span></span><br><span class="line">root<span class="variable">&amp;web2</span>: ~<span class="meta">#echo nginx web2 &gt; /usr/share/nginx/html/index.html</span></span><br><span class="line">root<span class="variable">&amp;web2</span>: ~<span class="meta">#nginx</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="测试高可用性"><a href="#测试高可用性" class="headerlink" title="测试高可用性"></a>测试高可用性</h3><h4 id="后端web服务器单点失败"><a href="#后端web服务器单点失败" class="headerlink" title="后端web服务器单点失败"></a>后端web服务器单点失败</h4><p>停掉web1的Nginx服务，代理服务器可以自动检测到web1宕掉，不再向坏掉的web1调度数据包。</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;web1</span>: ~<span class="meta">#nginx -s stop</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root&amp;client: ~#<span class="keyword">for</span> i <span class="keyword">in</span> &#123;<span class="number">1.</span><span class="number">.1000</span>&#125; ; <span class="keyword">do</span> sleep <span class="number">0.5</span> ;curl <span class="number">172.18</span><span class="number">.22</span><span class="number">.22</span> ; <span class="keyword">done</span></span><br><span class="line">nginx web2</span><br><span class="line">nginx web2</span><br><span class="line">nginx web2</span><br><span class="line">nginx web2</span><br></pre></td></tr></table></figure>
+<h4 id="后端web服务器全部失败"><a href="#后端web服务器全部失败" class="headerlink" title="后端web服务器全部失败"></a>后端web服务器全部失败</h4><p>停掉web1和web2两台主机的Nginx服务，前端代理服务器会自动响应sorry server；</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;web1</span>: ~<span class="meta">#nginx -s stop</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;web2</span>: ~<span class="meta">#nginx -s stop</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root&amp;client: ~#<span class="keyword">for</span> i <span class="keyword">in</span> &#123;<span class="number">1.</span><span class="number">.1000</span>&#125; ; <span class="keyword">do</span> sleep <span class="number">0.5</span> ;curl <span class="number">172.18</span><span class="number">.22</span><span class="number">.22</span> ; <span class="keyword">done</span></span><br><span class="line">sorry_server1</span><br><span class="line">sorry_server1</span><br><span class="line">sorry_server1</span><br></pre></td></tr></table></figure>
+<h4 id="Nginx代理导致的前端代理单点失败"><a href="#Nginx代理导致的前端代理单点失败" class="headerlink" title="Nginx代理导致的前端代理单点失败"></a>Nginx代理导致的前端代理单点失败</h4><p>宕掉前端主代理服务器的Nginx服务，备用代理服务器会主动接过VIP响应客户端的请求，但会有几秒钟不能响应客户端请求。</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;proxy1</span>: ~<span class="meta">#nginx -s stop</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/g5lhbbFhBb.png?imageslim" alt="mark"></p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">root&amp;client: ~#<span class="keyword">for</span> i <span class="keyword">in</span> &#123;<span class="number">1.</span><span class="number">.1000</span>&#125; ; <span class="keyword">do</span> sleep <span class="number">0.5</span> ;curl <span class="number">172.18</span><span class="number">.22</span><span class="number">.22</span> ; <span class="keyword">done</span></span><br><span class="line">nginx web2</span><br><span class="line">nginx web1</span><br><span class="line">nginx web2</span><br><span class="line">nginx web1</span><br><span class="line">curl: (<span class="number">7</span>) couldn't connect <span class="keyword">to</span> host</span><br><span class="line">curl: (<span class="number">7</span>) couldn't connect <span class="keyword">to</span> host</span><br><span class="line">curl: (<span class="number">7</span>) couldn't connect <span class="keyword">to</span> host</span><br><span class="line">curl: (<span class="number">7</span>) couldn't connect <span class="keyword">to</span> host</span><br><span class="line">curl: (<span class="number">7</span>) couldn't connect <span class="keyword">to</span> host</span><br><span class="line">curl: (<span class="number">7</span>) couldn't connect <span class="keyword">to</span> host</span><br><span class="line">curl: (<span class="number">7</span>) couldn't connect <span class="keyword">to</span> host</span><br><span class="line">nginx web2</span><br><span class="line">nginx web2</span><br><span class="line">nginx web1</span><br></pre></td></tr></table></figure>
+<h4 id="Keepalived导致的前端代理单点失败"><a href="#Keepalived导致的前端代理单点失败" class="headerlink" title="Keepalived导致的前端代理单点失败"></a>Keepalived导致的前端代理单点失败</h4><p>宕掉前端主代理服务器的Keepalived服务，备用代理服务器会主动接过VIP响应客户端的请求，请求不会中断。</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">&amp;proxy1</span>: ~<span class="meta">#systemctl stop keepalived</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/LA25aiddhd.png?imageslim" alt="mark"></p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root&amp;client: ~#<span class="keyword">for</span> i <span class="keyword">in</span> &#123;<span class="number">1.</span><span class="number">.1000</span>&#125; ; <span class="keyword">do</span> sleep <span class="number">0.5</span> ;curl <span class="number">172.18</span><span class="number">.22</span><span class="number">.22</span> ; <span class="keyword">done</span></span><br><span class="line">nginx web1</span><br><span class="line">nginx web2</span><br><span class="line">nginx web1</span><br><span class="line">nginx web2</span><br><span class="line">nginx web1</span><br><span class="line">nginx web2</span><br><span class="line">nginx web1</span><br></pre></td></tr></table></figure>
+<p><strong>观察VIP的迁移</strong><br><em>服务宕掉前</em></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/6CbEb1b3A1.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/a7mhfm9BEh.png?imageslim" alt="mark"></p>
+<p><em>服务宕掉后</em></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/KFHgfhdijK.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180422/8dGH723gc4.png?imageslim" alt="mark"></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/WEB/Keepalived实现Nginx反代的高可用/">Keepalived实现Nginx反代的高可用</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">执念</a></p>
+        <p><span>发布时间:</span>2018-01-21, 23:16:04</p>
+        <p><span>最后更新:</span>2018-04-24, 11:41:13</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/WEB/Keepalived实现Nginx反代的高可用/" title="Keepalived实现Nginx反代的高可用">http://subtraction.tech/WEB/Keepalived实现Nginx反代的高可用/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://subtraction.tech/WEB/Keepalived实现Nginx反代的高可用/　　作者: 执念" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/Command/Iptables使用方法/">
+                    Iptables使用方法
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#实验前的准备工作"><span class="toc-number">1.</span> <span class="toc-text">实验前的准备工作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#时间同步"><span class="toc-number">1.1.</span> <span class="toc-text">时间同步</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#关闭防火墙和SELinux"><span class="toc-number">1.2.</span> <span class="toc-text">关闭防火墙和SELinux</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#做名称解析"><span class="toc-number">1.3.</span> <span class="toc-text">做名称解析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实现基于key的认证"><span class="toc-number">1.4.</span> <span class="toc-text">实现基于key的认证</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主代理proxy1的配置"><span class="toc-number">2.</span> <span class="toc-text">主代理proxy1的配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装所需的软件包"><span class="toc-number">2.1.</span> <span class="toc-text">安装所需的软件包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#定义通知脚本"><span class="toc-number">2.2.</span> <span class="toc-text">定义通知脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#定义Keepalived的日志存储"><span class="toc-number">2.3.</span> <span class="toc-text">定义Keepalived的日志存储</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置Keepalived服务"><span class="toc-number">2.4.</span> <span class="toc-text">配置Keepalived服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置Nginx的反向代理"><span class="toc-number">2.5.</span> <span class="toc-text">配置Nginx的反向代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#备用代理proxy2的配置"><span class="toc-number">3.</span> <span class="toc-text">备用代理proxy2的配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装所需的软件包-1"><span class="toc-number">3.1.</span> <span class="toc-text">安装所需的软件包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#定义Keepalived的日志存储-1"><span class="toc-number">3.2.</span> <span class="toc-text">定义Keepalived的日志存储</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置Keepalived服务-1"><span class="toc-number">3.3.</span> <span class="toc-text">配置Keepalived服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置备用的Nginx反向代理"><span class="toc-number">3.4.</span> <span class="toc-text">配置备用的Nginx反向代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后端被代理服务器web1的配置"><span class="toc-number">4.</span> <span class="toc-text">后端被代理服务器web1的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后端被代理服务器web2的配置"><span class="toc-number">5.</span> <span class="toc-text">后端被代理服务器web2的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试高可用性"><span class="toc-number">6.</span> <span class="toc-text">测试高可用性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#后端web服务器单点失败"><span class="toc-number">6.1.</span> <span class="toc-text">后端web服务器单点失败</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#后端web服务器全部失败"><span class="toc-number">6.2.</span> <span class="toc-text">后端web服务器全部失败</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Nginx代理导致的前端代理单点失败"><span class="toc-number">6.3.</span> <span class="toc-text">Nginx代理导致的前端代理单点失败</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Keepalived导致的前端代理单点失败"><span class="toc-number">6.4.</span> <span class="toc-text">Keepalived导致的前端代理单点失败</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-5 i,
+        .toc-level-5 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Keepalived实现Nginx反代的高可用　| Learning - 知也无涯　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2161788';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/Command/Iptables使用方法/" title="下一篇: Iptables使用方法">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/WEB/Keepalived实现Nginx反代的高可用/">Keepalived实现Nginx反代的高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Iptables使用方法/">Iptables使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">使用WordPress搭建基于LAMP架构的博客平台</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">验证跨网段通信中，目标主机的网关配置对数据包接收的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/DataBase/SQL语句基础指令语法/">SQL语句基础指令语法</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/PXE自动化安装centos6和centos7/">PXE自动化安装centos6和centos7</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/SSH端口转发/">SSH端口转发</a></li><li class="post-list-item"><a class="post-list-link" href="/Security/搭建私有CA/">搭建私有CA</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/制作一个简单的小Linux系统/">制作一个简单的小Linux系统</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/CentOS-7-配置网络组/">CentOS 7 配置网络组</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/grep和正则表达式/">grep和正则表达式</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/多网卡绑定配置-bonding/">多网卡绑定配置-bonding</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux文件查找利器-locate-find/">Linux文件查找利器 locate & find</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/CentOS-7搭建yum服务器/">CentOS7搭建yum服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/vim使用手册/">vim使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux帮助使用方法/">Linux帮助使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7-3-从下载到安装/">CentOS7.3从下载到安装</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 执念
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

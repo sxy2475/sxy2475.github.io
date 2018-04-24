@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="执念" />
+
+
+
+<meta name="description" content="Iptables的组成Iptables由四个表和五个链以及一些规则组成">
+<meta name="keywords" content="Iptables">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Iptables使用方法">
+<meta property="og:url" content="http://subtraction.tech/Command/Iptables使用方法/index.html">
+<meta property="og:site_name" content="Learning - 知也无涯">
+<meta property="og:description" content="Iptables的组成Iptables由四个表和五个链以及一些规则组成">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-04-23T13:10:47.485Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Iptables使用方法">
+<meta name="twitter:description" content="Iptables的组成Iptables由四个表和五个链以及一些规则组成">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Learning - 知也无涯" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/logo.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-corner-indicator.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Iptables使用方法 | Learning - 知也无涯</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?fb5cb1201030123c8ccc4051f4e759fd";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/sxy.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">执念</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CA/">CA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/">Gateway</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HA/">HA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Iptables/">Iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keepalived/">Keepalived</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PXE/">PXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RE/">RE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSH/">SSH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/find/">find</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/locate/">locate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/man/">man</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://www.ilinux.io/">ilinux.io</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于系统架构</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">执念</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/sxy.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">执念</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Iptables使用方法" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Command/Iptables使用方法/" class="article-date">
+      <time datetime="2018-01-03T07:51:17.000Z" itemprop="datePublished">2018-01-03</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Iptables使用方法
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Command/">Command</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Iptables/">Iptables</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<h3 id="Iptables的组成"><a href="#Iptables的组成" class="headerlink" title="Iptables的组成"></a>Iptables的组成</h3><p>Iptables由四个表和五个链以及一些规则组成</p>
+<a id="more"></a>
+<h4 id="四张表"><a href="#四张表" class="headerlink" title="四张表"></a>四张表</h4><p><strong>四张表及其功能简介</strong></p>
+<table>
+<thead>
+<tr>
+<th>表名</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>filter表</td>
+<td>过滤规则表，根据预定义的规则过滤符合条件的数据包</td>
+</tr>
+<tr>
+<td>nat表</td>
+<td>地址转换规则表</td>
+</tr>
+<tr>
+<td>mangle表</td>
+<td>修改数据标记位规则表</td>
+</tr>
+<tr>
+<td>raw表</td>
+<td>关闭nat表上启用的连接追踪功能，加快封包穿越防火墙的速度</td>
+</tr>
+</tbody>
+</table>
+<p><strong>四张表按优先级由高到低的顺序为: raw–&gt;mangle–&gt;nat–&gt;filter</strong></p>
+<h4 id="五个链"><a href="#五个链" class="headerlink" title="五个链"></a>五个链</h4><p><strong>五个内置链（chain）及其所在位置</strong></p>
+<table>
+<thead>
+<tr>
+<th>链名</th>
+<th>位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PREROUTING</td>
+<td>报文进入本机的路由前的位置</td>
+</tr>
+<tr>
+<td>INPUT</td>
+<td>到达本机内部的报文的位置</td>
+</tr>
+<tr>
+<td>FORWARD</td>
+<td>由本机转发的报文的位置</td>
+</tr>
+<tr>
+<td>OUTPUT</td>
+<td>由本机内部发出的报文的位置</td>
+</tr>
+<tr>
+<td>POSTROUTING</td>
+<td>报文路由后流出本机的位置</td>
+</tr>
+</tbody>
+</table>
+<p><strong>数据报文流向</strong></p>
+<ul>
+<li><p>跟本机内部进程通信：</p>
+<ul>
+<li>流入 ：   –&gt; PREROUTING –&gt; INPUT</li>
+<li>流出 ：   –&gt; OUTPUT –&gt; POSTROUTING</li>
+</ul>
+</li>
+<li>经由本机转发：<ul>
+<li>请求： –&gt; PREROUTING –&gt; FORWARD –&gt; POSTROUTING</li>
+<li>响应： –&gt; PREROUTING –&gt; FORWARD –&gt; POSTROUIING</li>
+</ul>
+</li>
+</ul>
+<p><strong>表和链的对应关系</strong></p>
+<table>
+<thead>
+<tr>
+<th>表名</th>
+<th>链</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>filter</td>
+<td>INPUT, FORWARD, OUTPUT</td>
+</tr>
+<tr>
+<td>nat</td>
+<td>PREROUTING（SNAT），POSTROUTING（DNAT），OUTPUT</td>
+</tr>
+<tr>
+<td>mangle</td>
+<td>PREROUTING, INPUT, FORWARD, OUTPUT, POSTROUTING</td>
+</tr>
+<tr>
+<td>raw</td>
+<td>PREROUTING, OUTPUT</td>
+</tr>
+</tbody>
+</table>
+<h4 id="添加规则的要点"><a href="#添加规则的要点" class="headerlink" title="添加规则的要点"></a>添加规则的要点</h4><p><strong>iptables添加规则时的考量点</strong></p>
+<ol>
+<li>要实现哪种功能：判断添加在哪张表上</li>
+<li>报文流经的路径：判断添加在哪个链上</li>
+<li>报文的流向：判断源和目的地</li>
+<li>匹配规则：根据业务需要</li>
+<li>客户端端口是随机的，因此大多数场景下无须限定</li>
+</ol>
+<p><strong>链上规则的次序，即为检查的次序</strong></p>
+<ol>
+<li>切记：先添加放行自己的规则</li>
+<li>同类规则(访问同一应用)，匹配范围小的放上面</li>
+<li>不同类规则(访问不同应用)，匹配到报文频率较大的放上面</li>
+<li>将那些可由一条规则描述的多个规则合并为一个</li>
+<li>设置默认策略，允许所有或拒绝所有</li>
+</ol>
+<hr>
+<h3 id="Iptables的使用"><a href="#Iptables的使用" class="headerlink" title="Iptables的使用"></a>Iptables的使用</h3><p><strong>基本语法：</strong></p>
+<blockquote>
+<p>iptables [-t 表名] &lt;-A|-I|-D|-R&gt; 链名 [规则编号][-i|-o 网卡名称] [-p 协议类型][-s 源IP地址|源子网] [-sport 源端口号][-d 目标IP地址|目标子网] [-dport 目标端口号][-m 模式 [模式选项]]  -j  动作 [动作选项]</p>
+</blockquote>
+<h4 id="对表进行的操作"><a href="#对表进行的操作" class="headerlink" title="对表进行的操作"></a>对表进行的操作</h4><ul>
+<li><strong>-t TABLE</strong>      <ul>
+<li>nat </li>
+<li>mangle</li>
+<li>raw</li>
+<li>filter</li>
+</ul>
+</li>
+</ul>
+<p><strong>默认为filter表</strong><br><strong>示例：</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~]#iptables -t<span class="built_in"> filter </span>-A INPUT -s 172.18.255.254 -j DROP</span><br><span class="line">~]#iptables -t<span class="built_in"> nat </span>-A POSTROUTING -s 192.168.10.0/24 -j SNAT --to-source 172.18.255.254</span><br></pre></td></tr></table></figure>
+<h4 id="对链进行的操作"><a href="#对链进行的操作" class="headerlink" title="对链进行的操作"></a>对链进行的操作</h4><ul>
+<li>-N：new，新建一条链</li>
+<li>-X：delete，删除一条用户自定义链（空链）</li>
+<li>-F：lush，清空一条链，默认清空表中所有链</li>
+<li>-P：policy，定义链的默认处理策略<ul>
+<li>ACCEPT        接受</li>
+<li>DROP           丢弃</li>
+<li>REJECT         拒绝</li>
+</ul>
+</li>
+<li>-E：rename，重命名自定义的未被引用的（计数器为0）链</li>
+</ul>
+<h4 id="对规则进行的操作"><a href="#对规则进行的操作" class="headerlink" title="对规则进行的操作"></a>对规则进行的操作</h4><ul>
+<li>-L: list，列出规则<ul>
+<li>-n：numeric，以数字格式显示地址和端口</li>
+<li>-v：verbose，详细信息，-vv, -vvv</li>
+<li>-x：exactly，显示计数器的精确值</li>
+<li>–line-numbers：显示链上规则的编号</li>
+</ul>
+</li>
+<li>-A：append，追加，在链的最后加一条规则</li>
+<li>-I： Insert，插入一条规则，默认第一个，一般使用 -I CHAIN NUM 给规则加一个编号</li>
+<li>-D：delete，删除一条规则，可以输入完整规则，或者直接指定标号加以删除<ul>
+<li>rule speclfication</li>
+<li>rule number</li>
+</ul>
+</li>
+<li>-R：replace,替换某条规则，规则被替换并不会改变顺序，必须要指定替换的规则编号。-R CHAIN NUM</li>
+<li>-Z： zero，清空计数器，iptables中每条规则默认有两个计数器</li>
+<li>-S：selected，以iptables-save 命令的格式显示链上的规则</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-A</span> <span class="selector-tag">INPUT</span> <span class="selector-tag">-s</span> 172<span class="selector-class">.18</span><span class="selector-class">.255</span><span class="selector-class">.254</span> <span class="selector-tag">-j</span> <span class="selector-tag">DROP</span></span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-A</span> <span class="selector-tag">INPUT</span> <span class="selector-tag">-s</span> 172<span class="selector-class">.18</span><span class="selector-class">.10</span><span class="selector-class">.0</span> <span class="selector-tag">-j</span> <span class="selector-tag">REJECT</span></span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-I</span> <span class="selector-tag">INPUT</span> <span class="selector-tag">-s</span> 172<span class="selector-class">.18</span><span class="selector-class">.0</span><span class="selector-class">.2</span> <span class="selector-tag">-j</span> <span class="selector-tag">ACCEPT</span>	#默认插入到的是第一条</span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-I</span> <span class="selector-tag">INPUT</span> 2 <span class="selector-tag">-s</span> 172<span class="selector-class">.18</span><span class="selector-class">.22</span><span class="selector-class">.100</span> <span class="selector-tag">-j</span> <span class="selector-tag">ACCEPT</span>	#指定插入位置</span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-D</span> <span class="selector-tag">INPUT</span> 2		#删除规则</span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-R</span> <span class="selector-tag">INPUT</span> 2 <span class="selector-tag">-s</span> 172<span class="selector-class">.18</span><span class="selector-class">.255</span><span class="selector-class">.254</span> <span class="selector-tag">-j</span> <span class="selector-tag">ACCEPT</span>		#替换指定规则</span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-F</span>		#清空所有规则</span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-Z</span>		#清空计数器</span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-nvL</span>	#查看规则</span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-nvL</span> <span class="selector-tag">--line-numbers</span>	#显示规则编号</span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-S</span>		#命令格式显示链上规则</span><br><span class="line">~]<span class="selector-id">#iptables</span> <span class="selector-tag">-nvL</span> <span class="selector-tag">-t</span> <span class="selector-tag">nat</span>	#查看指定的表</span><br></pre></td></tr></table></figure>
+<h4 id="匹配条件"><a href="#匹配条件" class="headerlink" title="匹配条件"></a>匹配条件</h4><h5 id="基本匹配"><a href="#基本匹配" class="headerlink" title="基本匹配"></a>基本匹配</h5><blockquote>
+<p>基本匹配：netfilter自带的匹配规则</p>
+</blockquote>
+<ul>
+<li>-s：指定匹配数据包的源地址</li>
+<li>-d：指定匹配数据包的目标地址</li>
+<li>-i：指定数据包的流入接口（逻辑接口），只能用于PREROUTING 、INPUT及FORWARD </li>
+<li>-o：指定数据包的流出接口，只能用于OUTPUT、FORWARD及POSTROUTING</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~]#iptables -A INPUT -s <span class="number">172.18</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">16</span> -j REJECT	#拒绝整个网段</span><br><span class="line">~]#iptables -A INPUT -s <span class="number">172.18</span><span class="number">.0</span><span class="number">.2</span>,<span class="number">172.18</span><span class="number">.10</span><span class="number">.0</span> -j REJECT	#同时定义多个IP</span><br><span class="line">~]#iptables -A INPUT -s <span class="number">172.18</span><span class="number">.0</span><span class="number">.2</span>,<span class="number">172.18</span><span class="number">.10</span><span class="number">.0</span> -d <span class="number">192.168</span><span class="number">.10</span><span class="number">.129</span> -j REJECT</span><br><span class="line">~]#iptables -A INPUT -d <span class="number">192.168</span><span class="number">.10</span><span class="number">.129</span> -j REJECT	#拒绝访问特定目标ip</span><br><span class="line">~]#iptables -A INPUT ! -d <span class="number">192.168</span><span class="number">.10</span><span class="number">.129</span> -j REJECT		#取反，除访问特定地址外的数据包都拒绝</span><br><span class="line">~]#iptables -A INPUT ! -s <span class="number">172.18</span><span class="number">.10</span><span class="number">.0</span> -j REJECT</span><br><span class="line">~]#iptables -A INPUT -p icmp -j REJECT		#只拒绝指定协议</span><br><span class="line">~]#iptables -A INPUT -i ens32 -p icmp -j REJECT	#拒绝指定接口的流量</span><br></pre></td></tr></table></figure>
+<h5 id="扩展匹配"><a href="#扩展匹配" class="headerlink" title="扩展匹配"></a>扩展匹配</h5><blockquote>
+<p>扩展匹配：对某一种功能的扩展，经由扩展模块引入的匹配机制</p>
+</blockquote>
+<p><strong>语法：</strong><code>-m macth_name \- -spec_options</code><br><strong>示例：</strong> <code>-m tcp \- -dport 22</code></p>
+<p><strong>隐式扩展：对某一种协议扩展</strong></p>
+<ul>
+<li>-p (tcp|udp|icmp|icmpv6|ah|esp|sctp|mh|all)：做协议匹配<ul>
+<li>tcp：隐藏了”-m tcp”的专用选项<ul>
+<li>[!] - -source-port, –sport port [:port] 匹配报文中TCP首部源端口，可以是端口范围；</li>
+<li>[!] - -dport port [:port]：目标端口，可以是单个端口或连续多个端口；</li>
+<li>[!] - -tcp-flags (SYN, ACK, FIN, RST, PSH, URG,RST,ALL,NONE)指定TCP的标志位，需要跟两个标志位列表，如：SYN,ACK,FIN,RST,SYN 第一个列表表示要检查的位，第二个列表表示第一个列表中所有标记位必须为1，而余下的必须为0；没有LIST1中指明的，不作检查；  </li>
+<li>[!] - -syn: 只允许新连接，相当于‘ - -tcp-flags SYN,ACK,FIN,RST,SYN’</li>
+</ul>
+</li>
+<li>udp：隐藏了”-m udp”的专用选项<ul>
+<li>[!]  - -sport port[:port]：指定匹配报文的源端口；可以是端口范围</li>
+<li>[!]  - -dport port[:port]：指定匹配报文的目标端口；可以是端口范围</li>
+</ul>
+</li>
+<li>icmp：隐藏了”-m icmpd”的专用选项<ul>
+<li>[!]  - -icmp-type<ul>
+<li>0：echo-reply，icmp应答</li>
+<li>8 : echo-request，icmp请求</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">~]<span class="selector-id">#iptables</span> -A INPUT -<span class="selector-tag">p</span> tcp --dport <span class="number">80</span> -j REJECT	#拒绝指定协议的指定端口</span><br><span class="line">~]<span class="selector-id">#iptables</span> -A INPUT -<span class="selector-tag">p</span> tcp --dport <span class="number">23</span> -j REJECT	</span><br><span class="line">~]<span class="selector-id">#iptables</span> -A INPUT -s <span class="number">172.18</span>.<span class="number">255.254</span> -<span class="selector-tag">p</span> tcp -m multiport --dports <span class="number">23</span>:<span class="number">25</span>,<span class="number">80</span> -j REJECT	#显式扩展，定义多端口匹配。</span><br><span class="line">~]<span class="selector-id">#iptables</span> -A INPUT -m iprange --src-range <span class="number">172.18</span>.<span class="number">1.0</span>-<span class="number">172.18</span>.<span class="number">255.255</span> -<span class="selector-tag">p</span> tcp -m multiport --dports <span class="number">23</span>:<span class="number">25</span>,<span class="number">80</span> -j REJECT</span><br><span class="line">~]<span class="selector-id">#iptables</span> -A INPUT -m mac --mac-source <span class="number">00</span>:<span class="number">50</span>:<span class="number">56</span>:<span class="number">2</span>c:<span class="number">74</span>:<span class="number">64</span> -<span class="selector-tag">p</span> tcp -m multiport --dports <span class="number">23</span>,<span class="number">80</span> -j REJECT	#基于MAC的控制</span><br><span class="line">~]<span class="selector-id">#iptables</span> -A OUTPUT -m string --algo bm --string <span class="string">"abc"</span> -j REJECT		#拦截带有特定字符串的数据包</span><br><span class="line">~]<span class="selector-id">#iptables</span> -A INPUT -s <span class="number">172.18</span>.<span class="number">0.0</span>/<span class="number">16</span> -d <span class="number">172.18</span>.<span class="number">172.18</span> -<span class="selector-tag">p</span> tcp --dport <span class="number">80</span> -m <span class="selector-tag">time</span> --timestart <span class="number">00</span>:<span class="number">00</span> --timestop <span class="number">10</span>:<span class="number">00</span> --weekdays Wed,Sun -j DROP		#基于时间的控制</span><br><span class="line">~]<span class="selector-id">#iptables</span> -A INPUT -<span class="selector-tag">p</span> tcp --dport <span class="number">22</span> -m connlimit --connlimit-above <span class="number">2</span> -j REJECT	#限制单台主机的ssh连接数量</span><br><span class="line">~]<span class="selector-id">#iptables</span> -A INPUT -<span class="selector-tag">p</span> icmp --icmp-type <span class="number">8</span> -m limit --limit <span class="number">10</span>/minute --limit-burst <span class="number">10</span> -j ACCEPT</span><br><span class="line">~]<span class="selector-id">#iptables</span> -A INPUT -<span class="selector-tag">p</span> icmp -j REJECT			#基于收发报文的速率做匹配</span><br></pre></td></tr></table></figure>
+<p><strong>显示扩展：额外附加的更多匹配规则，功能性的扩展</strong></p>
+<ul>
+<li>-m multiport ：以离散方式定义多端口匹配,最多指定15个端口<ul>
+<li>[!] –source-ports,–sports port[,port|,port:port]…      指定多个源端口</li>
+<li>[!] –destination-ports,–dportsport[,port|,port:port]…       指定多个目标端口</li>
+<li>[!] –ports port[,port|,port:port]…     多个源或目标端口</li>
+</ul>
+</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~]# iptables -I INPUT -s <span class="number">172.16</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">16</span> -d <span class="number">172.16</span><span class="number">.100</span><span class="number">.9</span> -p tcp -m multiport --dports <span class="number">22</span>,<span class="number">80</span> -j ACCEPT</span><br><span class="line">~]# iptables -I OUTPUT -d <span class="number">172.16</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">16</span> -s <span class="number">172.16</span><span class="number">.100</span><span class="number">.9</span> -p tcp -m multiport --sports <span class="number">22</span>,<span class="number">80</span> -j ACCEPT</span><br></pre></td></tr></table></figure>
+<ul>
+<li>-m iprange :  指明连续的（但一般是不能扩展为整个网络）ip地址范围时使用；<ul>
+<li>[!] - -src-range from[-to]：指明连续的源IP地址范围；</li>
+<li>[!] - -dst-range from[-to]：指明连续的目标IP地址范围；</li>
+</ul>
+</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~]# <span class="selector-tag">iptables</span> <span class="selector-tag">-I</span> <span class="selector-tag">INPUT</span> <span class="selector-tag">-d</span> 172<span class="selector-class">.16</span><span class="selector-class">.100</span><span class="selector-class">.9</span> <span class="selector-tag">-p</span> <span class="selector-tag">tcp</span> <span class="selector-tag">-m</span> <span class="selector-tag">multiport</span> <span class="selector-tag">--dports</span> 22<span class="selector-pseudo">:23</span>,80 <span class="selector-tag">-m</span> <span class="selector-tag">iprange</span> <span class="selector-tag">--src-range</span> 172<span class="selector-class">.16</span><span class="selector-class">.100</span><span class="selector-class">.1-172</span><span class="selector-class">.16</span><span class="selector-class">.100</span><span class="selector-class">.120</span> <span class="selector-tag">-j</span> <span class="selector-tag">ACCEPT</span></span><br><span class="line">~]# <span class="selector-tag">iptables</span> <span class="selector-tag">-I</span> <span class="selector-tag">OUTPUT</span> <span class="selector-tag">-s</span> 172<span class="selector-class">.16</span><span class="selector-class">.100</span><span class="selector-class">.9</span> <span class="selector-tag">-p</span> <span class="selector-tag">tcp</span> <span class="selector-tag">-m</span> <span class="selector-tag">multiport</span> <span class="selector-tag">--sports</span> 22<span class="selector-pseudo">:23</span>,80 <span class="selector-tag">-m</span> <span class="selector-tag">iprange</span> <span class="selector-tag">--dst-range</span> 172<span class="selector-class">.16</span><span class="selector-class">.100</span><span class="selector-class">.1-172</span><span class="selector-class">.16</span><span class="selector-class">.100</span><span class="selector-class">.120</span> <span class="selector-tag">-j</span> <span class="selector-tag">ACCEPT</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>-m string : 检查报文中出现的字符串；<ul>
+<li>–algo {bm|kmp}<ul>
+<li>bm = Boyer-Moore</li>
+<li>kmp = Knuth-Pratt-Morris</li>
+</ul>
+</li>
+<li>[!] - -string pattern ：给定要检查的字符串模式</li>
+</ul>
+</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~]# iptables -I OUTPUT -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --<span class="built_in">string</span> <span class="string">'movie'</span> -<span class="keyword">j</span> REJECT</span><br></pre></td></tr></table></figure>
+<ul>
+<li>-m time :根据报文到达的时间与指定的时间范围进行匹配；<ul>
+<li>–datestart YYYY[-MM[-DD[Thh[:mm[:ss]]]]] 日期</li>
+<li>–datestop YYYY[-MM[-DD[Thh[:mm[:ss]]]]]</li>
+<li>–timestart hh:mm[:ss] 时间</li>
+<li>–timestop hh:mm[:ss]</li>
+<li>[!] –monthdays day[,day…] 每个月的几号</li>
+<li>[!] –weekdays day[,day…] 星期几</li>
+<li>–kerneltz：内核时区，不建议使用，CentOS7系统默认为UTC<br><strong>注意：centos6 不支持kerneltz ，–localtz指定本地时区(默认)</strong></li>
+</ul>
+</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~]<span class="selector-id">#iptables</span> -A INPUT -s <span class="number">172.16</span>.<span class="number">0.0</span>/<span class="number">16</span> -d <span class="number">172.16</span>.<span class="number">100.10</span> -<span class="selector-tag">p</span> tcp --dport <span class="number">80</span> -m <span class="selector-tag">time</span> --timestart <span class="number">14</span>:<span class="number">30</span> --timestop <span class="number">18</span>:<span class="number">30</span> --weekdays Sat,Sun --kerneltz -j DROP</span><br></pre></td></tr></table></figure>
+<ul>
+<li>-m connlimit  : 根据每客户端IP（也可以是地址块）做并发连接数数量匹配；<br>可防止CC(Challenge Collapsar挑战黑洞)攻击</li>
+<li>–connlimit-upton：连接的数量小于等于n时匹配</li>
+<li>–connlimit-above n：连接的数量大于n时匹配<br>通常分别与默认的拒绝或允许策略配合使用</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~]<span class="selector-id">#iptables-A</span> <span class="selector-tag">INPUT</span> <span class="selector-tag">-d</span> 172<span class="selector-class">.16</span><span class="selector-class">.100</span><span class="selector-class">.10</span> <span class="selector-tag">-p</span> <span class="selector-tag">tcp--dport22</span> <span class="selector-tag">-m</span> <span class="selector-tag">connlimit--connlimit-above</span> 2 <span class="selector-tag">-j</span> <span class="selector-tag">REJECT</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>-m limit  : 基于收发报文的速率做检查；<br>令牌桶过滤器<ul>
+<li>–limit rate[/second|/minute|/hour|/day]</li>
+<li>–limit-burst number</li>
+</ul>
+</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~]<span class="selector-id">#iptables</span> -I INPUT -d <span class="number">172.16</span>.<span class="number">100.10</span> -<span class="selector-tag">p</span> icmp --icmp-type <span class="number">8</span> -m limit --limit <span class="number">3</span>/minute --limit-burst <span class="number">5</span> -j ACCEPT</span><br><span class="line">~]<span class="selector-id">#iptables</span> -I INPUT <span class="number">2</span> -<span class="selector-tag">p</span> icmp -j REJECT</span><br></pre></td></tr></table></figure>
+<ul>
+<li>-m state  : 根据连接追踪机制检查连接的状态；<br>conntrack机制：追踪本机上的请求和响应之间的关系<ul>
+<li>NEW：新发出请求；连接追踪信息库中不存在此连接的相关信息条目，因此，将其识别为第一次发出的请求</li>
+<li>ESTABLISHED：NEW状态之后，连接追踪信息库中为其建立的条目失效之前期间内所进行的通信状态</li>
+<li>RELATED：新发起的但与已有连接相关联的连接，如：ftp协议中的数据连接与命令连接之间的关系</li>
+<li>INVALID：无效的连接，如flag标记不正确</li>
+<li>UNTRACKED：未进行追踪的连接，如raw表中关闭追踪</li>
+<li>[!] –state state</li>
+</ul>
+</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~]#iptables -A INPUT -d <span class="number">172.16</span><span class="number">.100</span><span class="number">.10</span> -p tcp-m multiport --dport <span class="number">22</span>,<span class="number">80</span> -m <span class="section">state</span> --<span class="section">state</span> NEW,ESTABLISHED -j ACCEPT</span><br><span class="line">~]#iptables -A OUTPUT -s <span class="number">172.16</span><span class="number">.100</span><span class="number">.10</span> -p tcp-m multiport --sport <span class="number">22</span>,<span class="number">80</span> -m <span class="section">state</span> --<span class="section">state</span> ESTABLISHED -j ACCEPT</span><br></pre></td></tr></table></figure>
+<p>调整连接追踪功能所能够容纳的最大连接数量：<br>        /proc/sys/net/nf_conntrack_max</p>
+<p>已经追踪到并记录下的连接：<br>        /proc/net/nf_conntrack</p>
+<p>不同协议或连接类型追的时长：<br>        /proc/sys/net/netfilter/</p>
+<h4 id="处理动作"><a href="#处理动作" class="headerlink" title="处理动作"></a>处理动作</h4><ul>
+<li>-j TARGET：跳至指定的TARGET<ul>
+<li>ACCEPT: 接受</li>
+<li>DROP: 丢弃</li>
+<li>REJECT: 拒绝</li>
+<li>RETURN: 返回调用链</li>
+<li>REDIRECT：端口重定向</li>
+<li>LOG: 记录日志</li>
+<li>MARK：做防火墙标记</li>
+<li>DNAT：目标地址转换</li>
+<li>SNAT：源地址转换</li>
+<li>MASQUERADE：地址伪装</li>
+</ul>
+</li>
+</ul>
+<h3 id="保存规则的方法"><a href="#保存规则的方法" class="headerlink" title="保存规则的方法"></a>保存规则的方法</h3><ul>
+<li>如何保存及重载规则：</li>
+<li>保存规则至指定文件：<br>iptables-save &gt; /PATH/TO/SOMEFILE<ul>
+<li>从指定文件重载规则：<br>iptables-restore &lt; /PATH/FROM/SOMEFILE</li>
+</ul>
+</li>
+</ul>
+<p><strong>centos 6</strong></p>
+<p>定义好策略后执行此命令，定义的策略会在每次服务启动时自动加载</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">	~]<span class="selector-id">#service</span> iptables save</span><br><span class="line">或：</span><br><span class="line">	~]<span class="selector-id">#iptables-save</span> &gt; /etc/sysconfig/iptables</span><br></pre></td></tr></table></figure>
+<p><strong>centos 7</strong><br>将定义好的规则导出到文件中</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~]<span class="selector-id">#iptables-save</span> &gt; /etc/sysconfig/iptables</span><br></pre></td></tr></table></figure>
+<p>将保存于文件中的策略恢复,此方法适用于多套规则之间相互切换</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~]<span class="selector-id">#iptables-restore</span> &lt; /etc/sysconfig/iptables</span><br></pre></td></tr></table></figure>
+<p>若要每次服务启动时自动加载策略，需要将此命令写于/etc/rc.d/rc.local文件中，注意给文件加执行权限</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Command/Iptables使用方法/">Iptables使用方法</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">执念</a></p>
+        <p><span>发布时间:</span>2018-01-03, 15:51:17</p>
+        <p><span>最后更新:</span>2018-04-23, 21:10:47</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Command/Iptables使用方法/" title="Iptables使用方法">http://subtraction.tech/Command/Iptables使用方法/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://subtraction.tech/Command/Iptables使用方法/　　作者: 执念" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/WEB/Keepalived实现Nginx反代的高可用/">
+                    Keepalived实现Nginx反代的高可用
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">
+                    使用WordPress搭建基于LAMP架构的博客平台
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Iptables的组成"><span class="toc-number">1.</span> <span class="toc-text">Iptables的组成</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#四张表"><span class="toc-number">1.1.</span> <span class="toc-text">四张表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#五个链"><span class="toc-number">1.2.</span> <span class="toc-text">五个链</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#添加规则的要点"><span class="toc-number">1.3.</span> <span class="toc-text">添加规则的要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Iptables的使用"><span class="toc-number">2.</span> <span class="toc-text">Iptables的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#对表进行的操作"><span class="toc-number">2.1.</span> <span class="toc-text">对表进行的操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#对链进行的操作"><span class="toc-number">2.2.</span> <span class="toc-text">对链进行的操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#对规则进行的操作"><span class="toc-number">2.3.</span> <span class="toc-text">对规则进行的操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#匹配条件"><span class="toc-number">2.4.</span> <span class="toc-text">匹配条件</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#基本匹配"><span class="toc-number">2.4.1.</span> <span class="toc-text">基本匹配</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#扩展匹配"><span class="toc-number">2.4.2.</span> <span class="toc-text">扩展匹配</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#处理动作"><span class="toc-number">2.5.</span> <span class="toc-text">处理动作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#保存规则的方法"><span class="toc-number">3.</span> <span class="toc-text">保存规则的方法</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-5 i,
+        .toc-level-5 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Iptables使用方法　| Learning - 知也无涯　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2161788';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/WEB/Keepalived实现Nginx反代的高可用/" title="上一篇: Keepalived实现Nginx反代的高可用">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/" title="下一篇: 使用WordPress搭建基于LAMP架构的博客平台">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/WEB/Keepalived实现Nginx反代的高可用/">Keepalived实现Nginx反代的高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Iptables使用方法/">Iptables使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">使用WordPress搭建基于LAMP架构的博客平台</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">验证跨网段通信中，目标主机的网关配置对数据包接收的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/DataBase/SQL语句基础指令语法/">SQL语句基础指令语法</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/PXE自动化安装centos6和centos7/">PXE自动化安装centos6和centos7</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/SSH端口转发/">SSH端口转发</a></li><li class="post-list-item"><a class="post-list-link" href="/Security/搭建私有CA/">搭建私有CA</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/制作一个简单的小Linux系统/">制作一个简单的小Linux系统</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/CentOS-7-配置网络组/">CentOS 7 配置网络组</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/grep和正则表达式/">grep和正则表达式</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/多网卡绑定配置-bonding/">多网卡绑定配置-bonding</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux文件查找利器-locate-find/">Linux文件查找利器 locate & find</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/CentOS-7搭建yum服务器/">CentOS7搭建yum服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/vim使用手册/">vim使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux帮助使用方法/">Linux帮助使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7-3-从下载到安装/">CentOS7.3从下载到安装</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 执念
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

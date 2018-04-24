@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="执念" />
+
+
+
+<meta name="description" content="grepgrep（global search regular expression(RE) and print out the line），是一款文本过滤（模式：pattern）工具。">
+<meta name="keywords" content="grep,RE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="grep和正则表达式">
+<meta property="og:url" content="http://subtraction.tech/Command/grep和正则表达式/index.html">
+<meta property="og:site_name" content="Learning - 知也无涯">
+<meta property="og:description" content="grepgrep（global search regular expression(RE) and print out the line），是一款文本过滤（模式：pattern）工具。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-04-23T13:46:33.859Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="grep和正则表达式">
+<meta name="twitter:description" content="grepgrep（global search regular expression(RE) and print out the line），是一款文本过滤（模式：pattern）工具。">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Learning - 知也无涯" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/logo.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-corner-indicator.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>grep和正则表达式 | Learning - 知也无涯</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?fb5cb1201030123c8ccc4051f4e759fd";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/sxy.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">执念</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CA/">CA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/">Gateway</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HA/">HA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Iptables/">Iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keepalived/">Keepalived</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PXE/">PXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RE/">RE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSH/">SSH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/find/">find</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/locate/">locate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/man/">man</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://www.ilinux.io/">ilinux.io</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于系统架构</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">执念</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/sxy.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">执念</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-grep和正则表达式" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Command/grep和正则表达式/" class="article-date">
+      <time datetime="2017-08-20T10:15:57.000Z" itemprop="datePublished">2017-08-20</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      grep和正则表达式
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Command/">Command</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RE/">RE</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/grep/">grep</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<h3 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h3><p><strong>grep</strong>（global search regular expression(RE) and print out the line），是一款文本过滤（模式：pattern）工具。</p>
+<a id="more"></a>
+<h4 id="grep作用"><a href="#grep作用" class="headerlink" title="grep作用"></a>grep作用</h4><p>文本搜索工具，根据用户指定的“模式”对目标文本逐行进行匹配检查；打印匹配到的行。<br><strong>模式：</strong>由正则表达式字符及文本字符所编写的过滤条件。</p>
+<h4 id="grep家族的三大分支"><a href="#grep家族的三大分支" class="headerlink" title="grep家族的三大分支"></a>grep家族的三大分支</h4><ul>
+<li>grep支持基本的正则表达式</li>
+<li>egrep支持扩展的正则表达式，grep的-E选项其实就是egrep</li>
+<li>fgrep不支持正则表达式，grep的-F选项其实就是fgrep</li>
+</ul>
+<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><p><strong>正则表达式</strong>（REFEXP）：由一类特殊字符及文本字符所编写的模式，其中有些字符不表示字符字面意义，而表示控制或通配的功能。<br>正则表达式是vim, grep, sed, awk等众多强大文本处理工具的重要组成部分，被用来检索、替换那些匹配某个模式的文本。<br><strong>正则表达式分为两类</strong></p>
+<ul>
+<li>基本正则表达式：BRE</li>
+<li>扩展正则表达式：ERE</li>
+</ul>
+<h3 id="grep语法"><a href="#grep语法" class="headerlink" title="grep语法"></a>grep语法</h3><p><code>grep [OPTIONS] PATTERN [FILE...]</code><br><code>grep [OPTIONS][-e PATTERN | -f FILE] [FILE...]</code></p>
+<h4 id="grep命令选项"><a href="#grep命令选项" class="headerlink" title="grep命令选项"></a>grep命令选项</h4><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>- -color=auto</td>
+<td>对匹配到的文本着色显示</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>显示不被pattern匹配到的行</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>忽略字符大小写</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>显示匹配的行号</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>统计匹配的行数</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>仅显示匹配到的字符串</td>
+</tr>
+<tr>
+<td>-q</td>
+<td>静默模式，不输出任何信息</td>
+</tr>
+<tr>
+<td>-A #</td>
+<td>匹配行的后#行</td>
+</tr>
+<tr>
+<td>-B #</td>
+<td>匹配行的前#行</td>
+</tr>
+<tr>
+<td>-C #</td>
+<td>匹配行的前后各#行</td>
+</tr>
+<tr>
+<td>-e</td>
+<td>实现多个选项间的逻辑or关系    <code>grep –e ‘cat ’ -e ‘dog’ file</code></td>
+</tr>
+<tr>
+<td>-w</td>
+<td>匹配整个单词</td>
+</tr>
+<tr>
+<td>-E</td>
+<td>使用扩展的正则表达式</td>
+</tr>
+<tr>
+<td>-F</td>
+<td>不支持正则表达式，直接搜索文本</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note：</strong>centos6与centos7的区别，centos7上通过定义了grep的别名来高亮显示匹配到的字符串，centos6没有高亮显示。</p>
+<h3 id="正则表达式元字符"><a href="#正则表达式元字符" class="headerlink" title="正则表达式元字符"></a>正则表达式元字符</h3><p>正则表达式元字符根据功能的不同，可以分为以下几类：字符匹配、匹配次数、位置锚定、分组。</p>
+<h4 id="字符匹配"><a href="#字符匹配" class="headerlink" title="字符匹配"></a>字符匹配</h4><table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.</td>
+<td>匹配任意单个字符</td>
+</tr>
+<tr>
+<td>[ ]</td>
+<td>匹配指定范围内的任意单个字符</td>
+</tr>
+<tr>
+<td>[^]</td>
+<td>匹配指定范围外的任意单个字符</td>
+</tr>
+<tr>
+<td>[:alnum:]</td>
+<td>字母和数字</td>
+</tr>
+<tr>
+<td>[:alpha:]</td>
+<td>代表任何英文大小写字符，即A-Z和a-z</td>
+</tr>
+<tr>
+<td>[:lower:]</td>
+<td>小写字母</td>
+</tr>
+<tr>
+<td>[:upper:]</td>
+<td>大写字母</td>
+</tr>
+<tr>
+<td>[:blank:]</td>
+<td>空白字符（空格和制表符）</td>
+</tr>
+<tr>
+<td>[:space:]</td>
+<td>水平和垂直的空白字符（比[:blank:]包含的范围广）</td>
+</tr>
+<tr>
+<td>[:cntrl:]</td>
+<td>不可打印的控制字符（退格、删除、警铃…）</td>
+</tr>
+<tr>
+<td>[:digit:]</td>
+<td>十进制数字</td>
+</tr>
+<tr>
+<td>[:xdigit:]</td>
+<td>十六进制数字</td>
+</tr>
+<tr>
+<td>[:graph:]</td>
+<td>可打印的非空白字符</td>
+</tr>
+<tr>
+<td>[:print:]</td>
+<td>可打印字符</td>
+</tr>
+<tr>
+<td>[:punct:]</td>
+<td>标点符号</td>
+</tr>
+</tbody>
+</table>
+<h4 id="匹配次数"><a href="#匹配次数" class="headerlink" title="匹配次数"></a>匹配次数</h4><p>用在要指定次数的字符后面，用于指定前面的字符要出现的次数；需要注意的是，默认情况下，正则表达式是工作在贪婪模式下，能匹配多少就匹配多少。</p>
+<table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>匹配前面的字符任意次，包括0次。</td>
+</tr>
+<tr>
+<td>.*</td>
+<td>任意长度的任意字符</td>
+</tr>
+<tr>
+<td>\?</td>
+<td>匹配其前面的字符0或1次</td>
+</tr>
+<tr>
+<td>\+</td>
+<td>匹配其前面的字符至少1次</td>
+</tr>
+<tr>
+<td>\{n\}</td>
+<td>匹配前面的字符n次</td>
+</tr>
+<tr>
+<td>\{m,n\}</td>
+<td>匹配前面的字符至少m次，至多n次</td>
+</tr>
+<tr>
+<td>\{,n\}</td>
+<td>匹配前面的字符至多n次</td>
+</tr>
+<tr>
+<td>\{n,\}</td>
+<td>匹配前面的字符至少n次</td>
+</tr>
+</tbody>
+</table>
+<h4 id="位置锚定"><a href="#位置锚定" class="headerlink" title="位置锚定"></a>位置锚定</h4><p>对特定位置进行定位</p>
+<table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^</td>
+<td>行首锚定，用于模式的最左侧</td>
+</tr>
+<tr>
+<td>$</td>
+<td>行尾锚定，用于模式的最右侧</td>
+</tr>
+<tr>
+<td>^PATTERN$</td>
+<td>用于模式匹配整行</td>
+</tr>
+<tr>
+<td>^$</td>
+<td>空行</td>
+</tr>
+<tr>
+<td>^[[:space:]]*$</td>
+<td>空白行</td>
+</tr>
+<tr>
+<td>\&lt; 或\b</td>
+<td>词首锚定，用于单词模式的左侧</td>
+</tr>
+<tr>
+<td>> 或\b</td>
+<td>词尾锚定；用于单词模式的右侧</td>
+</tr>
+<tr>
+<td>\&lt;模式\&gt;</td>
+<td>匹配整个单词</td>
+</tr>
+</tbody>
+</table>
+<h4 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h4><p><strong>分组：</strong>是指将一个或多个字符捆绑在一起，当作一个整体进行处理，其符号为：()<br>如：(xy)*ab 表示xy这个整体可以出现任意次<br><strong>注意：</strong></p>
+<ol>
+<li>分组括号中的模式匹配到的内容会被正则表达式引擎记录与内部变量中，这些变量的命名方式为：\1,\2,\3,……<br>\1:从左侧起，第一个左括号以及与之匹配的右括号之间的模式所匹配到的字符；如：(ab+(xy)<em>)中\1表示：ab+(xy)\</em>,\2表示：xy</li>
+<li><strong>后向引用：</strong>引用前面的分组括号中的模式所匹配的字符，而非模式本身。</li>
+</ol>
+<h4 id="或者"><a href="#或者" class="headerlink" title="或者"></a>或者</h4><table>
+<thead>
+<tr>
+<th>用法</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a\</td>
+<td style="text-align:left">b</td>
+<td>a或b</td>
+</tr>
+<tr>
+<td>C\</td>
+<td style="text-align:left">cat</td>
+<td>C或cat</td>
+</tr>
+<tr>
+<td>\(C\</td>
+<td style="text-align:left">c\)at</td>
+<td>Cat或cat</td>
+</tr>
+</tbody>
+</table>
+<h3 id="扩展正则表达式元字符"><a href="#扩展正则表达式元字符" class="headerlink" title="扩展正则表达式元字符"></a>扩展正则表达式元字符</h3><p>扩展正则表达式与基本正则表达式功能类似，但扩展正则表达式元字符的书写更加简单明了，下面介绍的是扩展正则表达式与基本正则表达式的两种元字符之间的不同之处。扩展正则表达式元字符依据功能也可以分为以下几类：字符匹配、匹配次数、位置锚定、分组。</p>
+<h4 id="字符匹配-1"><a href="#字符匹配-1" class="headerlink" title="字符匹配"></a>字符匹配</h4><table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.</td>
+<td>任意单个字符</td>
+</tr>
+<tr>
+<td>[ ]</td>
+<td>指定范围的字符</td>
+</tr>
+<tr>
+<td>[^]</td>
+<td>不在指定范围的字符</td>
+</tr>
+</tbody>
+</table>
+<h4 id="匹配次数-1"><a href="#匹配次数-1" class="headerlink" title="匹配次数"></a>匹配次数</h4><table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>匹配前面字符任意次</td>
+</tr>
+<tr>
+<td>?</td>
+<td>0或1次</td>
+</tr>
+<tr>
+<td>+</td>
+<td>1次或多次</td>
+</tr>
+<tr>
+<td>{m}</td>
+<td>匹配m次</td>
+</tr>
+<tr>
+<td>{m,n}</td>
+<td>至少m，至多n次</td>
+</tr>
+</tbody>
+</table>
+<h4 id="位置锚定-1"><a href="#位置锚定-1" class="headerlink" title="位置锚定"></a>位置锚定</h4><table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^</td>
+<td>行首</td>
+</tr>
+<tr>
+<td>$</td>
+<td>行尾</td>
+</tr>
+<tr>
+<td>\&lt;, \b</td>
+<td>语首</td>
+</tr>
+<tr>
+<td>\&gt;, \b</td>
+<td>语尾</td>
+</tr>
+</tbody>
+</table>
+<h4 id="分组-1"><a href="#分组-1" class="headerlink" title="分组"></a>分组</h4><p>()：用括号括起来表示要引用的内容，不需要转义。<br>后向引用：\1, \2, …</p>
+<h4 id="或者-1"><a href="#或者-1" class="headerlink" title="或者"></a>或者</h4><table>
+<thead>
+<tr>
+<th style="text-align:left">用法</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">a\</td>
+<td style="text-align:left">b</td>
+<td>a或b</td>
+</tr>
+<tr>
+<td style="text-align:left">C\</td>
+<td style="text-align:left">cat</td>
+<td>C或cat</td>
+</tr>
+<tr>
+<td style="text-align:left">(C\</td>
+<td style="text-align:left">c)at</td>
+<td>Cat或cat</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Command/grep和正则表达式/">grep和正则表达式</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">执念</a></p>
+        <p><span>发布时间:</span>2017-08-20, 18:15:57</p>
+        <p><span>最后更新:</span>2018-04-23, 21:46:33</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Command/grep和正则表达式/" title="grep和正则表达式">http://subtraction.tech/Command/grep和正则表达式/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://subtraction.tech/Command/grep和正则表达式/　　作者: 执念" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/Network/CentOS-7-配置网络组/">
+                    CentOS 7 配置网络组
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/Network/多网卡绑定配置-bonding/">
+                    多网卡绑定配置-bonding
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#grep"><span class="toc-number">1.</span> <span class="toc-text">grep</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#grep作用"><span class="toc-number">1.1.</span> <span class="toc-text">grep作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#grep家族的三大分支"><span class="toc-number">1.2.</span> <span class="toc-text">grep家族的三大分支</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#正则表达式"><span class="toc-number">2.</span> <span class="toc-text">正则表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#grep语法"><span class="toc-number">3.</span> <span class="toc-text">grep语法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#grep命令选项"><span class="toc-number">3.1.</span> <span class="toc-text">grep命令选项</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#正则表达式元字符"><span class="toc-number">4.</span> <span class="toc-text">正则表达式元字符</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#字符匹配"><span class="toc-number">4.1.</span> <span class="toc-text">字符匹配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#匹配次数"><span class="toc-number">4.2.</span> <span class="toc-text">匹配次数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#位置锚定"><span class="toc-number">4.3.</span> <span class="toc-text">位置锚定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分组"><span class="toc-number">4.4.</span> <span class="toc-text">分组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#或者"><span class="toc-number">4.5.</span> <span class="toc-text">或者</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#扩展正则表达式元字符"><span class="toc-number">5.</span> <span class="toc-text">扩展正则表达式元字符</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#字符匹配-1"><span class="toc-number">5.1.</span> <span class="toc-text">字符匹配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#匹配次数-1"><span class="toc-number">5.2.</span> <span class="toc-text">匹配次数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#位置锚定-1"><span class="toc-number">5.3.</span> <span class="toc-text">位置锚定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分组-1"><span class="toc-number">5.4.</span> <span class="toc-text">分组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#或者-1"><span class="toc-number">5.5.</span> <span class="toc-text">或者</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-5 i,
+        .toc-level-5 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"grep和正则表达式　| Learning - 知也无涯　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2161788';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/Network/CentOS-7-配置网络组/" title="上一篇: CentOS 7 配置网络组">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/Network/多网卡绑定配置-bonding/" title="下一篇: 多网卡绑定配置-bonding">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/WEB/Keepalived实现Nginx反代的高可用/">Keepalived实现Nginx反代的高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Iptables使用方法/">Iptables使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">使用WordPress搭建基于LAMP架构的博客平台</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">验证跨网段通信中，目标主机的网关配置对数据包接收的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/DataBase/SQL语句基础指令语法/">SQL语句基础指令语法</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/PXE自动化安装centos6和centos7/">PXE自动化安装centos6和centos7</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/SSH端口转发/">SSH端口转发</a></li><li class="post-list-item"><a class="post-list-link" href="/Security/搭建私有CA/">搭建私有CA</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/制作一个简单的小Linux系统/">制作一个简单的小Linux系统</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/CentOS-7-配置网络组/">CentOS 7 配置网络组</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/grep和正则表达式/">grep和正则表达式</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/多网卡绑定配置-bonding/">多网卡绑定配置-bonding</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux文件查找利器-locate-find/">Linux文件查找利器 locate & find</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/CentOS-7搭建yum服务器/">CentOS7搭建yum服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/vim使用手册/">vim使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux帮助使用方法/">Linux帮助使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7-3-从下载到安装/">CentOS7.3从下载到安装</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 执念
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

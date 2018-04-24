@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="执念" />
+
+
+
+<meta name="description" content="前言通过搭建网络环境，验证两种不同的跨网段通信模式下，目标主机不同的网关配置，对目标主机接收来自其它网段数据包的影响。">
+<meta name="keywords" content="Gateway">
+<meta property="og:type" content="article">
+<meta property="og:title" content="验证跨网段通信中，目标主机的网关配置对数据包接收的影响">
+<meta property="og:url" content="http://subtraction.tech/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/index.html">
+<meta property="og:site_name" content="Learning - 知也无涯">
+<meta property="og:description" content="前言通过搭建网络环境，验证两种不同的跨网段通信模式下，目标主机不同的网关配置，对目标主机接收来自其它网段数据包的影响。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/e1k4b9hf56.png?imageslim">
+<meta property="og:updated_time" content="2018-04-23T12:50:13.712Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="验证跨网段通信中，目标主机的网关配置对数据包接收的影响">
+<meta name="twitter:description" content="前言通过搭建网络环境，验证两种不同的跨网段通信模式下，目标主机不同的网关配置，对目标主机接收来自其它网段数据包的影响。">
+<meta name="twitter:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/e1k4b9hf56.png?imageslim">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Learning - 知也无涯" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/logo.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-corner-indicator.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>验证跨网段通信中，目标主机的网关配置对数据包接收的影响 | Learning - 知也无涯</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?fb5cb1201030123c8ccc4051f4e759fd";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/sxy.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">执念</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CA/">CA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/">Gateway</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HA/">HA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Iptables/">Iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keepalived/">Keepalived</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PXE/">PXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RE/">RE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSH/">SSH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/find/">find</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/locate/">locate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/man/">man</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://www.ilinux.io/">ilinux.io</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于系统架构</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">执念</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/sxy.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">执念</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-验证跨网段通信中，目标主机的网关配置对数据包接收的影响" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/" class="article-date">
+      <time datetime="2017-11-23T06:26:50.000Z" itemprop="datePublished">2017-11-23</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      验证跨网段通信中，目标主机的网关配置对数据包接收的影响
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Network/">Network</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gateway/">Gateway</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>通过搭建网络环境，验证两种不同的跨网段通信模式下，目标主机不同的网关配置，对目标主机接收来自其它网段数据包的影响。</p>
+<a id="more"></a>
+<hr>
+<h3 id="准备实验环境"><a href="#准备实验环境" class="headerlink" title="准备实验环境"></a>准备实验环境</h3><p>首先来说明一下本次实验的实验环境，此实验环境由四台Linux主机组成，一台做路由器，其余三台用于跨网段通信，其中192.168.10.0/24网段中的两台主机一台配置了网关，另一台则未配置网关。具体拓扑结构请看下图。<br><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180423/e1k4b9hf56.png?imageslim" alt="mark"></p>
+<h4 id="将Linux主机配置为路由器"><a href="#将Linux主机配置为路由器" class="headerlink" title="将Linux主机配置为路由器"></a>将Linux主机配置为路由器</h4><p><strong>网卡ens32的配置，此网卡作为路由器的eth0接口</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;route: ~#cat /etc/sysconfig/network-scripts/ifcfg-ens32</span></span><br><span class="line">DEVICE=<span class="string">"ens32"</span></span><br><span class="line">NAME=<span class="string">"ens32"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br><span class="line">IPADDR=192.168.10.1</span><br><span class="line">PREFIX=24</span><br></pre></td></tr></table></figure>
+<p><strong>网卡ens34的配置，此网卡作为路由器的eth1接口</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;route: ~#cat /etc/sysconfig/network-scripts/ifcfg-ens34</span></span><br><span class="line">DEVICE=<span class="string">"ens34"</span></span><br><span class="line">NAME=<span class="string">"ens34"</span></span><br><span class="line">ONBOOT=yes</span><br><span class="line">IPADDR=172.18.0.2</span><br><span class="line">PREFIX=16</span><br></pre></td></tr></table></figure>
+<p><strong>启用CentOS的路由转发功能</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root&amp;route: ~<span class="selector-id">#vim</span> /etc/sysctl.conf</span><br><span class="line">net<span class="selector-class">.ipv4</span><span class="selector-class">.ip_forward</span> = <span class="number">1</span></span><br><span class="line">root&amp;route: ~<span class="selector-id">#sysctl</span> -p</span><br><span class="line">net<span class="selector-class">.ipv4</span><span class="selector-class">.ip_forward</span> = <span class="number">1</span></span><br><span class="line">root&amp;route: ~<span class="selector-id">#cat</span> /proc/sys/net/ipv4/ip_forward</span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h4 id="hostA主机的网络配置"><a href="#hostA主机的网络配置" class="headerlink" title="hostA主机的网络配置"></a>hostA主机的网络配置</h4><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;hosta: ~#cat /etc/sysconfig/network-scripts/ifcfg-ens32</span></span><br><span class="line">DEVICE=<span class="string">"ens32"</span></span><br><span class="line">NAME=<span class="string">"ens32"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br><span class="line">IPADDR=192.168.10.100</span><br><span class="line">PREFIX=24</span><br></pre></td></tr></table></figure>
+<h4 id="hostB主机的网络配置"><a href="#hostB主机的网络配置" class="headerlink" title="hostB主机的网络配置"></a>hostB主机的网络配置</h4><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;hostb: ~#cat /etc/sysconfig/network-scripts/ifcfg-ens33</span></span><br><span class="line">DEVICE=<span class="string">"ens33"</span></span><br><span class="line">NAME=<span class="string">"ens33"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br><span class="line">IPADDR=192.169.10.200</span><br><span class="line">PREFIX=24</span><br><span class="line">GATEWAY=192.169.10.1</span><br></pre></td></tr></table></figure>
+<h4 id="hostC主机的网络配置"><a href="#hostC主机的网络配置" class="headerlink" title="hostC主机的网络配置"></a>hostC主机的网络配置</h4><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;hostc: ~#cat /etc/sysconfig/network-scripts/ifcfg-ens32</span></span><br><span class="line">DEVICE=<span class="string">"ens32"</span></span><br><span class="line">NAME=<span class="string">"ens32"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br><span class="line">IPADDR=172.18.0.100</span><br><span class="line">PREFIX=16</span><br><span class="line">GATEWAY=172.18.0.2</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="不在同一物理网段内的跨网段通信"><a href="#不在同一物理网段内的跨网段通信" class="headerlink" title="不在同一物理网段内的跨网段通信"></a>不在同一物理网段内的跨网段通信</h3><h4 id="目标主机正确配置了网关，数据包的接收情况"><a href="#目标主机正确配置了网关，数据包的接收情况" class="headerlink" title="目标主机正确配置了网关，数据包的接收情况"></a>目标主机正确配置了网关，数据包的接收情况</h4><p><strong>hostC主机</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hostc: ~#ping -w 4 192.168.10.200</span><br><span class="line">PING 192.168.10.200 (192.168.10.200) 56(84) bytes of data.</span><br><span class="line">64 bytes <span class="keyword">from</span> 192.168.10.200: <span class="attribute">icmp_seq</span>=1 <span class="attribute">ttl</span>=63 <span class="attribute">time</span>=1.15 ms</span><br><span class="line">64 bytes <span class="keyword">from</span> 192.168.10.200: <span class="attribute">icmp_seq</span>=2 <span class="attribute">ttl</span>=63 <span class="attribute">time</span>=0.740 ms</span><br><span class="line">64 bytes <span class="keyword">from</span> 192.168.10.200: <span class="attribute">icmp_seq</span>=3 <span class="attribute">ttl</span>=63 <span class="attribute">time</span>=1.68 ms</span><br><span class="line">64 bytes <span class="keyword">from</span> 192.168.10.200: <span class="attribute">icmp_seq</span>=4 <span class="attribute">ttl</span>=63 <span class="attribute">time</span>=4.99 ms</span><br><span class="line"></span><br><span class="line">--- 192.168.10.200<span class="built_in"> ping </span>statistics ---</span><br><span class="line">4 packets transmitted, 4 received, 0% packet loss, time 3005ms</span><br><span class="line">rtt min/avg/max/mdev = 0.740/2.142/4.996/1.681 ms</span><br></pre></td></tr></table></figure>
+<p><strong>hostB主机</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hostb: ~#tcpdump icmp -n -i ens33</span><br><span class="line">tcpdump: verbose output suppressed, use -v <span class="keyword">or</span> -vv <span class="keyword">for</span> full protocol decode</span><br><span class="line">listening on ens33, link-type EN10MB (Ethernet), capture size 65535 bytes</span><br><span class="line">03:44:40.315679<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.200: ICMP echo request, id 2059, seq 1, length 64</span><br><span class="line">03:44:40.315711<span class="built_in"> IP </span>192.168.10.200 &gt; 172.18.0.100: ICMP echo reply, id 2059, seq 1, length 64</span><br><span class="line">03:44:41.316467<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.200: ICMP echo request, id 2059, seq 2, length 64</span><br><span class="line">03:44:41.316505<span class="built_in"> IP </span>192.168.10.200 &gt; 172.18.0.100: ICMP echo reply, id 2059, seq 2, length 64</span><br><span class="line">03:44:42.318339<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.200: ICMP echo request, id 2059, seq 3, length 64</span><br><span class="line">03:44:42.318573<span class="built_in"> IP </span>192.168.10.200 &gt; 172.18.0.100: ICMP echo reply, id 2059, seq 3, length 64</span><br><span class="line">03:44:43.324261<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.200: ICMP echo request, id 2059, seq 4, length 64</span><br><span class="line">03:44:43.324332<span class="built_in"> IP </span>192.168.10.200 &gt; 172.18.0.100: ICMP echo reply, id 2059, seq 4, length 64</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="目标主机没有配置网关，数据包的接收情况"><a href="#目标主机没有配置网关，数据包的接收情况" class="headerlink" title="目标主机没有配置网关，数据包的接收情况"></a>目标主机没有配置网关，数据包的接收情况</h4><p><strong>hostC主机</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hostc: ~#ping -w 4 192.168.10.100</span><br><span class="line">PING 192.168.10.100 (192.168.10.100) 56(84) bytes of data.</span><br><span class="line"></span><br><span class="line">--- 192.168.10.100<span class="built_in"> ping </span>statistics ---</span><br><span class="line">4 packets transmitted, 0 received, 100% packet loss, time 3001ms</span><br></pre></td></tr></table></figure>
+<p><strong>hostA主机</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hosta: ~#tcpdump icmp -n -i ens32</span><br><span class="line">tcpdump: verbose output suppressed, use -v <span class="keyword">or</span> -vv <span class="keyword">for</span> full protocol decode</span><br><span class="line">listening on ens32, link-type EN10MB (Ethernet), capture size 65535 bytes</span><br><span class="line">03:54:19.622283<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.100: ICMP echo request, id 2066, seq 1, length 64</span><br><span class="line">03:54:20.621368<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.100: ICMP echo request, id 2066, seq 2, length 64</span><br><span class="line">03:54:21.621701<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.100: ICMP echo request, id 2066, seq 3, length 64</span><br><span class="line">03:54:22.622374<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.100: ICMP echo request, id 2066, seq 4, length 64</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="目标主机随意配置网关，数据包的接收情况"><a href="#目标主机随意配置网关，数据包的接收情况" class="headerlink" title="目标主机随意配置网关，数据包的接收情况"></a>目标主机随意配置网关，数据包的接收情况</h4><p><strong>hostC主机</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hostc: ~#ping -w 4 192.168.10.100</span><br><span class="line">PING 192.168.10.100 (192.168.10.100) 56(84) bytes of data.</span><br><span class="line"></span><br><span class="line">--- 192.168.10.100<span class="built_in"> ping </span>statistics ---</span><br><span class="line">4 packets transmitted, 0 received, 100% packet loss, time 3000ms</span><br></pre></td></tr></table></figure>
+<p><strong>hostA主机</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;hosta: ~#cat /etc/sysconfig/network-scripts/ifcfg-ens32</span></span><br><span class="line">BOOTPROTO=none</span><br><span class="line">NAME=<span class="string">"ens32"</span></span><br><span class="line">DEVICE=<span class="string">"ens32"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br><span class="line">IPADDR=192.168.10.100</span><br><span class="line">PREFIX=24</span><br><span class="line">GATEWAY=1.1.1.1</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hosta: ~#tcpdump icmp -n -i ens32</span><br><span class="line">tcpdump: verbose output suppressed, use -v <span class="keyword">or</span> -vv <span class="keyword">for</span> full protocol decode</span><br><span class="line">listening on ens32, link-type EN10MB (Ethernet), capture size 65535 bytes</span><br><span class="line">05:31:26.557215<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.100: ICMP echo request, id 2928, seq 1, length 64</span><br><span class="line">05:31:27.556578<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.100: ICMP echo request, id 2928, seq 2, length 64</span><br><span class="line">05:31:28.557039<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.100: ICMP echo request, id 2928, seq 3, length 64</span><br><span class="line">05:31:29.556779<span class="built_in"> IP </span>172.18.0.100 &gt; 192.168.10.100: ICMP echo request, id 2928, seq 4, length 64</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="在同一物理网段内的跨网段通信"><a href="#在同一物理网段内的跨网段通信" class="headerlink" title="在同一物理网段内的跨网段通信"></a>在同一物理网段内的跨网段通信</h3><p><strong>更改hostB主机的网络配置，将hostB主机的IP地址设为与hostA主机不在一个网段，并将网关指向hostA主机</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;hostb: ~#cat /etc/sysconfig/network-scripts/ifcfg-ens33</span></span><br><span class="line">NAME=<span class="string">"ens33"</span></span><br><span class="line">DEVICE=<span class="string">"ens33"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br><span class="line">IPADDR=192.168.20.200</span><br><span class="line">PREFIX=24</span><br><span class="line">GATEWAY=192.168.10.100</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="目标主机没有配置网关，数据包的接收情况-1"><a href="#目标主机没有配置网关，数据包的接收情况-1" class="headerlink" title="目标主机没有配置网关，数据包的接收情况"></a>目标主机没有配置网关，数据包的接收情况</h4><p><strong>hostB主机</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hostb: ~#ping -w 4 192.168.10.100</span><br><span class="line">PING 192.168.10.100 (192.168.10.100) 56(84) bytes of data.</span><br><span class="line"><span class="keyword">From</span> 192.168.20.200 <span class="attribute">icmp_seq</span>=1 Destination Host Unreachable</span><br><span class="line"><span class="keyword">From</span> 192.168.20.200 <span class="attribute">icmp_seq</span>=2 Destination Host Unreachable</span><br><span class="line"><span class="keyword">From</span> 192.168.20.200 <span class="attribute">icmp_seq</span>=3 Destination Host Unreachable</span><br><span class="line"><span class="keyword">From</span> 192.168.20.200 <span class="attribute">icmp_seq</span>=4 Destination Host Unreachable</span><br><span class="line"></span><br><span class="line">--- 192.168.10.100<span class="built_in"> ping </span>statistics ---</span><br><span class="line">4 packets transmitted, 0 received, +4 errors, 100% packet loss, time 3000ms</span><br><span class="line">pipe 4</span><br></pre></td></tr></table></figure>
+<p><strong>hostA主机</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;hosta: ~#cat /etc/sysconfig/network-scripts/ifcfg-ens32</span></span><br><span class="line">BOOTPROTO=none</span><br><span class="line">NAME=<span class="string">"ens32"</span></span><br><span class="line">DEVICE=<span class="string">"ens32"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br><span class="line">IPADDR=192.168.10.100</span><br><span class="line">PREFIX=24</span><br></pre></td></tr></table></figure>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hosta: ~<span class="meta">#tcpdump icmp -n -i ens32</span></span><br><span class="line">tcpdump: verbose <span class="keyword">output</span> suppressed, <span class="keyword">use</span> -v <span class="keyword">or</span> -vv <span class="keyword">for</span> full protocol decode</span><br><span class="line">listening on ens32, link-<span class="built_in">type</span> EN10MB (Ethernet), capture size <span class="number">65535</span> byt</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="目标主机随意配置网关，数据包的接收情况-1"><a href="#目标主机随意配置网关，数据包的接收情况-1" class="headerlink" title="目标主机随意配置网关，数据包的接收情况"></a>目标主机随意配置网关，数据包的接收情况</h4><p><strong>hostB主机</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hostb: ~#ping -w 4 192.168.10.100</span><br><span class="line">PING 192.168.10.100 (192.168.10.100) 56(84) bytes of data.</span><br><span class="line"></span><br><span class="line">--- 192.168.10.100<span class="built_in"> ping </span>statistics ---</span><br><span class="line">5 packets transmitted, 0 received, 100% packet loss, time 3999ms</span><br></pre></td></tr></table></figure>
+<p><strong>hostA主机</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;hosta: ~#cat /etc/sysconfig/network-scripts/ifcfg-ens32</span></span><br><span class="line">BOOTPROTO=none</span><br><span class="line">NAME=<span class="string">"ens32"</span></span><br><span class="line">DEVICE=<span class="string">"ens32"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br><span class="line">IPADDR=192.168.10.100</span><br><span class="line">PREFIX=24</span><br><span class="line">GATEWAY=1.1.1.</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hosta: ~#tcpdump icmp -n -i ens32</span><br><span class="line">tcpdump: verbose output suppressed, use -v <span class="keyword">or</span> -vv <span class="keyword">for</span> full protocol decode</span><br><span class="line">listening on ens32, link-type EN10MB (Ethernet), capture size 65535 bytes</span><br><span class="line">05:09:56.029371<span class="built_in"> IP </span>192.168.20.200 &gt; 192.168.10.100: ICMP echo request, id 3201, seq 1, length 64</span><br><span class="line">05:09:57.030732<span class="built_in"> IP </span>192.168.20.200 &gt; 192.168.10.100: ICMP echo request, id 3201, seq 2, length 64</span><br><span class="line">05:09:58.029916<span class="built_in"> IP </span>192.168.20.200 &gt; 192.168.10.100: ICMP echo request, id 3201, seq 3, length 64</span><br><span class="line">05:09:59.030256<span class="built_in"> IP </span>192.168.20.200 &gt; 192.168.10.100: ICMP echo request, id 3201, seq 4, length 64</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="目标主机配置了正确IP地址做网关，数据包的接收情况"><a href="#目标主机配置了正确IP地址做网关，数据包的接收情况" class="headerlink" title="目标主机配置了正确IP地址做网关，数据包的接收情况"></a>目标主机配置了正确IP地址做网关，数据包的接收情况</h4><p><strong>hostB主机</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hostb: ~#ping -w 4 192.168.10.100</span><br><span class="line">PING 192.168.10.100 (192.168.10.100) 56(84) bytes of data.</span><br><span class="line">64 bytes <span class="keyword">from</span> 192.168.10.100: <span class="attribute">icmp_seq</span>=1 <span class="attribute">ttl</span>=64 <span class="attribute">time</span>=0.651 ms</span><br><span class="line">64 bytes <span class="keyword">from</span> 192.168.10.100: <span class="attribute">icmp_seq</span>=2 <span class="attribute">ttl</span>=64 <span class="attribute">time</span>=2.85 ms</span><br><span class="line">64 bytes <span class="keyword">from</span> 192.168.10.100: <span class="attribute">icmp_seq</span>=3 <span class="attribute">ttl</span>=64 <span class="attribute">time</span>=2.40 ms</span><br><span class="line">64 bytes <span class="keyword">from</span> 192.168.10.100: <span class="attribute">icmp_seq</span>=4 <span class="attribute">ttl</span>=64 <span class="attribute">time</span>=2.15 ms</span><br><span class="line"></span><br><span class="line">--- 192.168.10.100<span class="built_in"> ping </span>statistics ---</span><br><span class="line">4 packets transmitted, 4 received, 0% packet loss, time 3005ms</span><br><span class="line">rtt min/avg/max/mdev = 0.651/2.015/2.856/0.829 ms</span><br></pre></td></tr></table></figure>
+<p><strong>hostA主机</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">root&amp;hosta: ~#cat /etc/sysconfig/network-scripts/ifcfg-ens32</span></span><br><span class="line">BOOTPROTO=none</span><br><span class="line">NAME=<span class="string">"ens32"</span></span><br><span class="line">DEVICE=<span class="string">"ens32"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br><span class="line">IPADDR=192.168.10.100</span><br><span class="line">PREFIX=24</span><br><span class="line">GATEWAY=192.168.20.200</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root&amp;hosta: ~#tcpdump icmp -n -i ens32</span><br><span class="line">tcpdump: verbose output suppressed, use -v <span class="keyword">or</span> -vv <span class="keyword">for</span> full protocol decode</span><br><span class="line">listening on ens32, link-type EN10MB (Ethernet), capture size 65535 bytes</span><br><span class="line">04:58:12.209344<span class="built_in"> IP </span>192.168.20.200 &gt; 192.168.10.100: ICMP echo request, id 5578, seq 1, length 64</span><br><span class="line">04:58:12.209577<span class="built_in"> IP </span>192.168.10.100 &gt; 192.168.20.200: ICMP echo reply, id 5578, seq 1, length 64</span><br><span class="line">04:58:13.212023<span class="built_in"> IP </span>192.168.20.200 &gt; 192.168.10.100: ICMP echo request, id 5578, seq 2, length 64</span><br><span class="line">04:58:13.212039<span class="built_in"> IP </span>192.168.10.100 &gt; 192.168.20.200: ICMP echo reply, id 5578, seq 2, length 64</span><br><span class="line">04:58:14.214720<span class="built_in"> IP </span>192.168.20.200 &gt; 192.168.10.100: ICMP echo request, id 5578, seq 3, length 64</span><br><span class="line">04:58:14.214736<span class="built_in"> IP </span>192.168.10.100 &gt; 192.168.20.200: ICMP echo reply, id 5578, seq 3, length 64</span><br><span class="line">04:58:15.216449<span class="built_in"> IP </span>192.168.20.200 &gt; 192.168.10.100: ICMP echo request, id 5578, seq 4, length 64</span><br><span class="line">04:58:15.216481<span class="built_in"> IP </span>192.168.10.100 &gt; 192.168.20.200: ICMP echo reply, id 5578, seq 4, length 64</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="对实验结果的总结"><a href="#对实验结果的总结" class="headerlink" title="对实验结果的总结"></a>对实验结果的总结</h3><p><strong>两种不同的跨网段通信模式下，目标主机进行不同的网关配置，目标主机接收数据包的结果。</strong></p>
+<table>
+<thead>
+<tr>
+<th>目标主机</th>
+<th>不在同一物理网段内的跨网段通信</th>
+<th>在同一物理网段内的跨网段通信</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正确配置网关</td>
+<td>接收并回应</td>
+<td>接收并回应</td>
+</tr>
+<tr>
+<td>没有配置网关</td>
+<td>接收不回应</td>
+<td>不接收</td>
+</tr>
+<tr>
+<td>随意配置网关</td>
+<td>接收不回应</td>
+<td>接收不回应</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>不在同一物理网段内的跨网段通信，网卡通过检查MAC地址接收数据包</li>
+<li>在同一物理网段内的跨网段通信，网卡通过检查数据包的IP地址接收数据包</li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">验证跨网段通信中，目标主机的网关配置对数据包接收的影响</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">执念</a></p>
+        <p><span>发布时间:</span>2017-11-23, 14:26:50</p>
+        <p><span>最后更新:</span>2018-04-23, 20:50:13</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/" title="验证跨网段通信中，目标主机的网关配置对数据包接收的影响">http://subtraction.tech/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://subtraction.tech/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/　　作者: 执念" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">
+                    使用WordPress搭建基于LAMP架构的博客平台
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/DataBase/SQL语句基础指令语法/">
+                    SQL语句基础指令语法
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#准备实验环境"><span class="toc-number">2.</span> <span class="toc-text">准备实验环境</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#将Linux主机配置为路由器"><span class="toc-number">2.1.</span> <span class="toc-text">将Linux主机配置为路由器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#hostA主机的网络配置"><span class="toc-number">2.2.</span> <span class="toc-text">hostA主机的网络配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#hostB主机的网络配置"><span class="toc-number">2.3.</span> <span class="toc-text">hostB主机的网络配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#hostC主机的网络配置"><span class="toc-number">2.4.</span> <span class="toc-text">hostC主机的网络配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#不在同一物理网段内的跨网段通信"><span class="toc-number">3.</span> <span class="toc-text">不在同一物理网段内的跨网段通信</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#目标主机正确配置了网关，数据包的接收情况"><span class="toc-number">3.1.</span> <span class="toc-text">目标主机正确配置了网关，数据包的接收情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#目标主机没有配置网关，数据包的接收情况"><span class="toc-number">3.2.</span> <span class="toc-text">目标主机没有配置网关，数据包的接收情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#目标主机随意配置网关，数据包的接收情况"><span class="toc-number">3.3.</span> <span class="toc-text">目标主机随意配置网关，数据包的接收情况</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在同一物理网段内的跨网段通信"><span class="toc-number">4.</span> <span class="toc-text">在同一物理网段内的跨网段通信</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#目标主机没有配置网关，数据包的接收情况-1"><span class="toc-number">4.1.</span> <span class="toc-text">目标主机没有配置网关，数据包的接收情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#目标主机随意配置网关，数据包的接收情况-1"><span class="toc-number">4.2.</span> <span class="toc-text">目标主机随意配置网关，数据包的接收情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#目标主机配置了正确IP地址做网关，数据包的接收情况"><span class="toc-number">4.3.</span> <span class="toc-text">目标主机配置了正确IP地址做网关，数据包的接收情况</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#对实验结果的总结"><span class="toc-number">5.</span> <span class="toc-text">对实验结果的总结</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-5 i,
+        .toc-level-5 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"验证跨网段通信中，目标主机的网关配置对数据包接收的影响　| Learning - 知也无涯　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2161788';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/" title="上一篇: 使用WordPress搭建基于LAMP架构的博客平台">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/DataBase/SQL语句基础指令语法/" title="下一篇: SQL语句基础指令语法">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/WEB/Keepalived实现Nginx反代的高可用/">Keepalived实现Nginx反代的高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Iptables使用方法/">Iptables使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">使用WordPress搭建基于LAMP架构的博客平台</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">验证跨网段通信中，目标主机的网关配置对数据包接收的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/DataBase/SQL语句基础指令语法/">SQL语句基础指令语法</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/PXE自动化安装centos6和centos7/">PXE自动化安装centos6和centos7</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/SSH端口转发/">SSH端口转发</a></li><li class="post-list-item"><a class="post-list-link" href="/Security/搭建私有CA/">搭建私有CA</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/制作一个简单的小Linux系统/">制作一个简单的小Linux系统</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/CentOS-7-配置网络组/">CentOS 7 配置网络组</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/grep和正则表达式/">grep和正则表达式</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/多网卡绑定配置-bonding/">多网卡绑定配置-bonding</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux文件查找利器-locate-find/">Linux文件查找利器 locate & find</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/CentOS-7搭建yum服务器/">CentOS7搭建yum服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/vim使用手册/">vim使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux帮助使用方法/">Linux帮助使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7-3-从下载到安装/">CentOS7.3从下载到安装</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 执念
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
