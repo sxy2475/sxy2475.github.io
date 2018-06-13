@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="执念" />
+
+
+
+<meta name="description" content="启动流程简述 POST加电自检，加载BIOS的硬件信息，检查各种硬件的情况，如CPU，内存和硬盘等硬件是否都插好，是否存在损坏等 。自检完成后会选择启动顺序，获取第一个启动设备。如：硬盘引导启动、网络引导启动、光盘引导启动等，一般选择使用硬盘引导启动，若硬盘无法引导启动则会自动选择后续的可用设备启动引导。启动引导设备也可以通过设置BISO程序的方式进行人为指定。">
+<meta name="keywords" content="启动流程,CentOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CentOS 6启动流程">
+<meta property="og:url" content="http://subtraction.tech/Linux/CentOS-6启动流程/index.html">
+<meta property="og:site_name" content="Learning - 知也无涯">
+<meta property="og:description" content="启动流程简述 POST加电自检，加载BIOS的硬件信息，检查各种硬件的情况，如CPU，内存和硬盘等硬件是否都插好，是否存在损坏等 。自检完成后会选择启动顺序，获取第一个启动设备。如：硬盘引导启动、网络引导启动、光盘引导启动等，一般选择使用硬盘引导启动，若硬盘无法引导启动则会自动选择后续的可用设备启动引导。启动引导设备也可以通过设置BISO程序的方式进行人为指定。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180510/akCC9JBACK.gif">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/6jL3a4gDi5.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180510/31LcKLe141.gif">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/0cHdijEkal.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/6BmLFAmmi4.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/gi6JK0HJEk.png?imageslim">
+<meta property="og:updated_time" content="2018-06-13T15:44:55.210Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CentOS 6启动流程">
+<meta name="twitter:description" content="启动流程简述 POST加电自检，加载BIOS的硬件信息，检查各种硬件的情况，如CPU，内存和硬盘等硬件是否都插好，是否存在损坏等 。自检完成后会选择启动顺序，获取第一个启动设备。如：硬盘引导启动、网络引导启动、光盘引导启动等，一般选择使用硬盘引导启动，若硬盘无法引导启动则会自动选择后续的可用设备启动引导。启动引导设备也可以通过设置BISO程序的方式进行人为指定。">
+<meta name="twitter:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180510/akCC9JBACK.gif">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Learning - 知也无涯" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/智子.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-corner-indicator.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>CentOS 6启动流程 | Learning - 知也无涯</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?fb5cb1201030123c8ccc4051f4e759fd";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/sxy.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">执念</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CA/">CA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/">Gateway</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HA/">HA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Iptables/">Iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keepalived/">Keepalived</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PXE/">PXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RE/">RE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSH/">SSH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/find/">find</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/locate/">locate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/man/">man</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://www.ilinux.io/">ilinux.io</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于系统架构</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">执念</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/sxy.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">执念</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-CentOS-6启动流程" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Linux/CentOS-6启动流程/" class="article-date">
+      <time datetime="2018-05-12T13:33:02.000Z" itemprop="datePublished">2018-05-12</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      CentOS 6启动流程
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<h3 id="启动流程简述"><a href="#启动流程简述" class="headerlink" title="启动流程简述"></a>启动流程简述</h3><ol>
+<li><p>POST加电自检，加载BIOS的硬件信息，检查各种硬件的情况，如CPU，内存和硬盘等硬件是否都插好，是否存在损坏等 。自检完成后会选择启动顺序，获取第一个启动设备。如：硬盘引导启动、网络引导启动、光盘引导启动等，一般选择使用硬盘引导启动，若硬盘无法引导启动则会自动选择后续的可用设备启动引导。启动引导设备也可以通过设置BISO程序的方式进行人为指定。</p>
+<a id="more"></a>
+</li>
+<li><p>MBR引导或GPT引导，具体使用哪种引导方式取决于硬盘使用的分区类型，但不管使用的是哪种引导方式原理都是相同的。这里以传统的MBR分区类型进行简单的举例说明，MBR引导主要依靠磁盘第一个扇区的前446个字节中的引导加载器boot loader来实现，通过boot loader查找并加载次引导加载程序。</p>
+</li>
+<li><p>GRUB引导阶段， 此阶段通过GRUB 1.5 stage加载/boot所在分区的文件系统驱动，将/boot所在分区作为根分区来进行挂载。当GRUB 1.5 stage的引导加载程序被加载并运行时，GRUB 2 stage的引导加载程序就可以进行加载了，GRUB 2 stage会通过grub.conf文件将内核文件和initramfs文件加载至内存中，进行内核自身的解压和初始化。</p>
+</li>
+<li><p>内核引导过程，内核会在这一过程中借助于ramdisk(initramfs)完成自身的初始化，initramfs是一个辅助的伪根系统，放置了和启动相关的一些核心文件和驱动，在内核引导过程中会将其模拟为一块磁盘进行临时挂载，获取其中的文件，将其当做一个临时的根文件系统使用，实现内核引导。此过程中内核会探测可识别到的所有硬件设备，并加载硬件驱动程序，如：挂载真正根分区需要的ext4文件系统的驱动，就是通过initramfs获得的。而后，内核通过chroot的方式以只读形式挂载真正的根文件系统，运行用户空间的第一个应用程序/sbin/init。</p>
+</li>
+<li><p>Init初始化过程，启动init进程，读取/etc/inittab文件和/etc/init/目录下的文件，执行/etc/rc.d/目录下的脚本文件初始化系统环境，启动需要开机自启的服务，执行/bin/login程序，进入登录状态。</p>
+</li>
+</ol>
+<p>Linux引导过程在20,000英尺处的视图:</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180510/akCC9JBACK.gif" alt="mrk"></p>
+<p>Init初始化过程：</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/6jL3a4gDi5.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="启动相关的重要概念"><a href="#启动相关的重要概念" class="headerlink" title="启动相关的重要概念"></a>启动相关的重要概念</h3><h4 id="POST相关概念"><a href="#POST相关概念" class="headerlink" title="POST相关概念"></a>POST相关概念</h4><p><strong>POST</strong>：Power-On-Self-Test，加电自检，是BIOS功能的一个主要部分。负责完成对CPU、主板、内存、硬盘子系统、显示子系统、串并行接口、键盘、CD-ROM光驱等硬件情况的检测。</p>
+<p><strong>BIOS</strong> ：Basic Input and Output System，基本输入输出系统，保存着有关计算机系统最重要的基本输入输出程序，系统信息设置、开机加电自检程序和系统启动自举程序等。</p>
+<p><strong>CMOS</strong>：Complementary Metal Oxide Semiconductor，互补金属氧化物半导体，保存各项参数的设定，按次序查找引导设备，第一个有引导程序的设备为本次启动设备。</p>
+<blockquote>
+<p><strong>BIOS与CMOS的关系</strong><br>CMOS是计算机上另一个重要的存储器。之所以提到它，是因为BIOS程序的设置结果就保存在CMOS中。而且，在BIOS程序引导计算机启动后，计算机需要载入CMOS中的用户信息和常规设置后才能正常使用。UEFI系统则多用NVRAM存储设置。</p>
+<p><strong>BIOS与CMOS的区别</strong><br>二者的区别是，BIOS是存储在只读记忆体（EEPROM），而CMOS为随机存储器（RAM）；BIOS中存储的是程序，而CMOS中存储的是普通信息。</p>
+<p>EEPROM即是我们常用的U盘和各类存储卡，因此我们可以更新BIOS，其内容亦能在断电后保存。</p>
+<p>CMOS RAM的内容在断电会消失。所以，把主板的电池拆出，便可重置其内容。另外，拆出电池也会重置时间。</p>
+</blockquote>
+<h4 id="主引导记录MBR"><a href="#主引导记录MBR" class="headerlink" title="主引导记录MBR"></a>主引导记录MBR</h4><p><strong>主引导记录</strong>（Master Boot Record，缩写：MBR），又叫做<strong>主引导扇区</strong>，是计算机开机后访问硬盘时所必须要读取的首个扇区。MBR总共有512个字节，其中前446个字节主要用来放置和启动相关的一段程序boot loader，是GRUB的1 stage。其后是4个16字节的“磁盘分区表”（DPT），以及2字节的结束标志位<code>55aa</code>。</p>
+<p>通过hexdump命令可以查看到MBR的内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> hexdump -C -n 512 /dev/sda	<span class="comment">#通过十六进制+ASCII码的形式显示磁盘的前512字节</span></span></span><br></pre></td></tr></table></figure>
+<p>MBR剖析图：</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180510/31LcKLe141.gif" alt="mark"></p>
+<h4 id="GRUB简介"><a href="#GRUB简介" class="headerlink" title="GRUB简介"></a>GRUB简介</h4><p><strong>GRUB</strong> (GRand Unified Bootloader 简称<code>GRUB</code>)是一个来自GUN项目的多操作系统启动程序，能够启动大多数免费操作系统 Linux、FreeBSD、NetBSD、GNU Mach和其它大多数的商业操作系统。在Linux系统的启动过程中GRUB程序是分为三个阶段在发挥它的作用，分别是1 stage、1.5 stage和2  stage。</p>
+<ul>
+<li>1 stage：MBR前446字节中的boot loader，主要用于初始化硬件，进行引导加载。</li>
+</ul>
+<ul>
+<li>1.5 stage：存放于MBR 512字节后续的空间之中，这段空间不属于任何分区，可以直接读取，主要用来加载进入boot分区所需的文件系统驱动，默认是ext4文件系统的驱动。</li>
+<li>2 stage：/boot/grub/目录中的文件，需要进入boot分区后才能进行读取，包含了挂载根分区的重要信息。</li>
+</ul>
+<p>使用<code>rpm -qi grub</code>命令可以查看到CentOS 6系统中安装的GRUB程序的软件信息，可以看到Version是0.97。</p>
+<hr>
+<h3 id="启动相关的重要文件"><a href="#启动相关的重要文件" class="headerlink" title="启动相关的重要文件"></a>启动相关的重要文件</h3><h4 id="initramfs-uname-r-img"><a href="#initramfs-uname-r-img" class="headerlink" title="initramfs-\$(uname -r).img"></a>initramfs-\$(uname -r).img</h4><p>ramdisk是一个伪根文件系统，主要用于帮助内核完成自身初始化、加载驱动程序挂载根分区，到此便可以被卸载掉了。而ramdisk便是boot目录中initramfs-\$(uname -r).img文件，这是一个gzip的压缩文件，存放了一些和启动相关的文件和驱动，是系统启动过程中的核心文件之一。</p>
+<h5 id="查看initramfs-uname-r-img文件的内容："><a href="#查看initramfs-uname-r-img文件的内容：" class="headerlink" title="查看initramfs-\$(uname -r).img文件的内容："></a>查看initramfs-\$(uname -r).img文件的内容：</h5><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法一</span></span><br><span class="line"># lsinitrd /boot/initramfs<span class="number">-2.6</span><span class="number">.32</span><span class="number">-696.</span>el6.x86_64.img </span><br><span class="line"></span><br><span class="line"><span class="comment">//方法二</span></span><br><span class="line"># cp /boot/initramfs<span class="number">-2.6</span><span class="number">.32</span><span class="number">-696.</span>el6.x86_64.img /tmp/</span><br><span class="line"># file /boot/initramfs<span class="number">-2.6</span><span class="number">.32</span><span class="number">-696.</span>el6.x86_64.img #可以看下此文件的类型是GZIP的</span><br><span class="line"># mv initramfs<span class="number">-2.6</span><span class="number">.32</span><span class="number">-696.</span>el6.x86_64.img initramfs<span class="number">-2.6</span><span class="number">.32</span><span class="number">-696.</span>el6.x86_64.img.gz	#压缩工具一般都挑后缀，要改一下文件名</span><br><span class="line"># gzip -d initramfs<span class="number">-2.6</span><span class="number">.32</span><span class="number">-696.</span>el6.x86_64.img.gz </span><br><span class="line"># ll -h ./initramfs<span class="number">-2.6</span><span class="number">.32</span><span class="number">-696.</span>el6.x86_64.img /boot/initramfs<span class="number">-2.6</span><span class="number">.32</span><span class="number">-696.</span>el6.x86_64.img	#解压之后文件是变大了的</span><br><span class="line"># file ./initramfs<span class="number">-2.6</span><span class="number">.32</span><span class="number">-696.</span>el6.x86_64.img 	#此时再来观察一下文件类型的变化，会发现文件类型变为了cpio;</span><br><span class="line"># cpio -id &lt; initramfs<span class="number">-2.6</span><span class="number">.32</span><span class="number">-696.</span>el6.x86_64.img	#解压cpio文件的方法</span><br><span class="line"># tree -L <span class="number">1</span> #查看解压后生成的文件</span><br><span class="line">.</span><br><span class="line">├── bin</span><br><span class="line">├── dev</span><br><span class="line">├── etc</span><br><span class="line">├── init</span><br><span class="line">├── lib</span><br><span class="line">...此处省略部分内容...</span><br><span class="line">├── lib64</span><br><span class="line">├── sbin</span><br><span class="line">├── sys</span><br><span class="line">├── sysroot</span><br><span class="line">├── tmp</span><br><span class="line">├── usr</span><br><span class="line">└── var</span><br></pre></td></tr></table></figure>
+<h5 id="生成initramfs-uname-r-img文件的方法"><a href="#生成initramfs-uname-r-img文件的方法" class="headerlink" title="生成initramfs-\$(uname -r).img文件的方法"></a>生成initramfs-\$(uname -r).img文件的方法</h5><p>生成ramdisk文件的命令有两个可以选择，mkinitrd和dracut，mkinitrd命令是一个脚本，调用了dracut命令。</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#为当前正在使用的内核重新制作ramdisk文件</span><br><span class="line"># mkinitrd /boot/initramfs-`uname -r`.img `uname -r`	</span><br><span class="line">或</span><br><span class="line"># dracut /boot/initramfs-$(uname-r).img $(uname-r)</span><br></pre></td></tr></table></figure>
+<h4 id="vmlinuz-uname-r"><a href="#vmlinuz-uname-r" class="headerlink" title="vmlinuz-\$(uname -r)"></a>vmlinuz-\$(uname -r)</h4><p>vmlinuz文件是一个可引导的，压缩的Linux内核，包含了Linux kernel的核心功能模块。内核在编译的时候为了实现精简，只将必要的功能模块打包到了内核文件之中，所以这个文件看起来并不是很大，一些非核心模块一般放置在/lib/modules/目录下。</p>
+<h4 id="etc-inittab"><a href="#etc-inittab" class="headerlink" title="/etc/inittab"></a>/etc/inittab</h4><p>此文件用于设置系统的运行级别，共0-6七个级别，默认级别一般设置为3或5，0或6不建议设置为默认运行级别，会循环重启或者关机。</p>
+<ul>
+<li>0：关机</li>
+<li>1：单用户模式(root自动登录)，single，维护模式</li>
+<li>2：多用户模式，启动网络功能，但不会启动NFS，维护模式</li>
+<li>3：多用户模式，正常模式，字符界面</li>
+<li>4：预留级别，同3级别类似</li>
+<li>5：多用户模式，正常模式，图形界面</li>
+<li>6：重启</li>
+</ul>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># cat /etc/inittab </span><br><span class="line">...此处省去部分内容...</span><br><span class="line">id:<span class="number">3</span>:initdefault:</span><br></pre></td></tr></table></figure>
+<h4 id="etc-rc-d-rc-sysinit"><a href="#etc-rc-d-rc-sysinit" class="headerlink" title="/etc/rc.d/rc.sysinit"></a>/etc/rc.d/rc.sysinit</h4><p>这是启动过程中一个初始化的脚本，主要作用如下：</p>
+<ol>
+<li>设置主机名</li>
+<li>设置欢迎信息</li>
+<li>激活udev和selinux</li>
+<li>挂载/etc/fstab文件中定义的文件系统</li>
+<li>检测根文件系统，并以读写方式重新挂载根文件系统</li>
+<li>设置系统时钟</li>
+<li>激活swap设备</li>
+<li>根据/etc/sysctl.conf文件设置内核参数</li>
+<li>激活lvm及software raid设备</li>
+<li>加载额外设备的驱动程序</li>
+<li>清理操作</li>
+</ol>
+<h4 id="etc-rc-d-目录"><a href="#etc-rc-d-目录" class="headerlink" title="/etc/rc.d/目录"></a>/etc/rc.d/目录</h4><h5 id="etc-rc-d-rc"><a href="#etc-rc-d-rc" class="headerlink" title="/etc/rc.d/rc"></a>/etc/rc.d/rc</h5><p>这是一个脚本文件，负责在运行级别发生更改时启动/停止服务。</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/0cHdijEkal.png?imageslim" alt="mark"></p>
+<h5 id="etc-rc-d-rc-d"><a href="#etc-rc-d-rc-d" class="headerlink" title="/etc/rc.d/rc#.d/"></a>/etc/rc.d/rc#.d/</h5><p><code>/etc/rc.d/rc#.d/</code>目录中包含了启动过程中需要启动的服务，#代表运行级别，以<strong>K</strong>开头的服务，数字越小，越先关闭；数字越小的服务，通常会依赖到别的服务；以<strong>S</strong>开头的服务，数字越小，越先运行；数字越小的服务，通常会被其它服务所依赖到；</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/6BmLFAmmi4.png?imageslim" alt="mark"></p>
+<h4 id="grub-conf"><a href="#grub-conf" class="headerlink" title="grub.conf"></a>grub.conf</h4><p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/gi6JK0HJEk.png?imageslim" alt="mark"></p>
+<h5 id="配置文件中各项的含义："><a href="#配置文件中各项的含义：" class="headerlink" title="配置文件中各项的含义："></a>配置文件中各项的含义：</h5><p><code>default=0</code></p>
+<p>如果安装了多个操作系统，这一项的值可以定义启动时默认引导的操作系统，0对应的是下文中的第一个<code>title</code>定义的启动项。</p>
+<p><code>timeout=5</code><br>启动等待时间。</p>
+<p><code>splashimage=(hd0,0)/grub/splash.xpm.gz</code><br>启动菜单背景图片的位置</p>
+<p><code>password</code></p>
+<p>在配置文件中没有明确写明，但可以通过在文件中两处不同位置添加<code>password</code>字段实现不同的加密效果。示例：<code>password centos</code></p>
+<p>1.password字段添加在title字段之上，设置编辑grub启动菜单的口令，若想编辑启动菜单需要先输入<code>p</code>字母后，输入正确的口令才能进行编辑。</p>
+<p>2.password字段添加在配置文件尾部，设置启动操作系统的口令，只有输入正确的口令系统才会正常启动。</p>
+<p>补充：为启动菜单设置密码，明文密码并不安全，建议使用加密算法加密。</p>
+<p>示例：</p>
+<ul>
+<li>password –md5 $1$xxxxxxxxxxxxxx        #MD5密文使用grub-md5-crypt生成<br>   password –encrypted $6$xxxxxxxxxxxxxx       #sha512密文使用grub-crypt生成    </li>
+</ul>
+<p>加密算法的设置方法：<br>打开vim编辑器的扩展命令模式，<code>:</code>后输入<code>r!grub-md5-crypt</code>,回车，输入口令，再回车，再次输入口令，回车后密码会自动写入到编辑器光标的所在位置。    </p>
+<p><code>hiddenmenu</code><br>作用是隐藏启动选项菜单，默认是不显示启动选项菜单的，只有在开机时敲任意键才会显示。<br><code>title CentOS 6 (2.6.32-696.el6.x86_64)</code><br>定义启动菜单启动项的名称。</p>
+<p><code>root (hd0,0)</code></p>
+<p>定义启动时根分区所在硬盘和分区对应磁盘的位置，这里的根指的是/boot，是由grub的独特语法决定的。hd是hard disk的缩写，这段的含义是根分区在第一块硬盘的第一个分区。hd0,0的位置对应的是磁盘boot分区的位置，所以在启动的时候是先将boot分区来做为根分区进行挂载的。</p>
+<p><code>kernel /vmlinuz-2.6.32-696.el6.x86_64</code></p>
+<p>定义了内核文件相对于根分区的绝对路径，如果在安装操作系统时没有给/boot划分独立分区，则需写成<code>/boot/vmlinuz-2.6.32-696.el6.x86_64 ro root=/dev/sda2</code>。</p>
+<p><code>ro root=UUID=58991581-5bce-43b0-8ffa-4cb3dd70574c rd_NO_LUKS rd_NO_LVM LANG=en_US.UTF-8 rd_NO_MD SYSFONT=latarcyrheb-sun16 crashkernel=auto  KEYBOARDTYPE=pc KEYTABLE=us rd_NO_DM rhgb quiet</code> </p>
+<p>这一段内容定义的是内核的参数信息，可以使用<code>cat /proc/cmdline</code>命令查看。</p>
+<p><code>ro</code>以只读方式进行挂载，但进入操作系统之后并不是只读的状态，所以后续还会重新挂载一次，选择以只读的方式进行挂载完全是出于安全的考虑。</p>
+<p><code>root=UUID=58991581-5bce-43b0-8ffa-4cb3dd70574c</code>，真正根分区对应磁盘分区的UUID，通过这一行去找要挂载的根分区位置，也可以写成绝对路径/dev/sda2。</p>
+<p><code>rhgb</code>这个字段的作用是启动时产生转圈圈的动画，虽然看着好看，但会隐藏服务的启动流程。建议删除掉，删除后可以看到服务的启动过程，系统出问题有助于排错。不删除的话，只有按Esc键，才会露出这个界面。<br><code>quiet</code>这个字段的作用是默认隐藏内核的启动过程，删除此字符可以看到内核的加载过程信息。</p>
+<p><code>initrd /initramfs-2.6.32-696.el6.x86_64.img</code></p>
+<p>定义ramdisk文件相对于根分区的绝对路径，如果在安装操作系统时没有给/boot划分独立分区，则需写成/boot/initramfs-2.6.32-696.el6.x86_64.img</p>
+<p>Note：因为只有在加载内核后才能知道谁是操作系统的根，才能知道该加载那种文件系统，所以initrd /initramfs-2.6.32-696.el6.x86_64.img 和kernel /vmlinuz-2.6.32-696.el6.x86_64的顺序不能对调，对调会导致无法启动。</p>
+<hr>
+<h4 id="相关文档连接"><a href="#相关文档连接" class="headerlink" title="相关文档连接"></a>相关文档连接</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> man 7 boot</span></span><br></pre></td></tr></table></figure>
+<p>[Linux 引导过程内幕]: <a href="https://www.ibm.com/developerworks/cn/linux/l-linuxboot/" target="_blank" rel="noopener">https://www.ibm.com/developerworks/cn/linux/l-linuxboot/</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Linux/CentOS-6启动流程/">CentOS 6启动流程</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">执念</a></p>
+        <p><span>发布时间:</span>2018-05-12, 21:33:02</p>
+        <p><span>最后更新:</span>2018-06-13, 23:44:55</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Linux/CentOS-6启动流程/" title="CentOS 6启动流程">http://subtraction.tech/Linux/CentOS-6启动流程/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://subtraction.tech/Linux/CentOS-6启动流程/　　作者: 执念" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/Linux/CentOS-6常见启动故障及排错/">
+                    CentOS 6常见启动故障及排错
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/WEB/Keepalived实现Nginx反代的高可用/">
+                    Keepalived实现Nginx反代的高可用
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#启动流程简述"><span class="toc-number">1.</span> <span class="toc-text">启动流程简述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动相关的重要概念"><span class="toc-number">2.</span> <span class="toc-text">启动相关的重要概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#POST相关概念"><span class="toc-number">2.1.</span> <span class="toc-text">POST相关概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#主引导记录MBR"><span class="toc-number">2.2.</span> <span class="toc-text">主引导记录MBR</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GRUB简介"><span class="toc-number">2.3.</span> <span class="toc-text">GRUB简介</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动相关的重要文件"><span class="toc-number">3.</span> <span class="toc-text">启动相关的重要文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#initramfs-uname-r-img"><span class="toc-number">3.1.</span> <span class="toc-text">initramfs-\$(uname -r).img</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#查看initramfs-uname-r-img文件的内容："><span class="toc-number">3.1.1.</span> <span class="toc-text">查看initramfs-\$(uname -r).img文件的内容：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#生成initramfs-uname-r-img文件的方法"><span class="toc-number">3.1.2.</span> <span class="toc-text">生成initramfs-\$(uname -r).img文件的方法</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#vmlinuz-uname-r"><span class="toc-number">3.2.</span> <span class="toc-text">vmlinuz-\$(uname -r)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#etc-inittab"><span class="toc-number">3.3.</span> <span class="toc-text">/etc/inittab</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#etc-rc-d-rc-sysinit"><span class="toc-number">3.4.</span> <span class="toc-text">/etc/rc.d/rc.sysinit</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#etc-rc-d-目录"><span class="toc-number">3.5.</span> <span class="toc-text">/etc/rc.d/目录</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#etc-rc-d-rc"><span class="toc-number">3.5.1.</span> <span class="toc-text">/etc/rc.d/rc</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#etc-rc-d-rc-d"><span class="toc-number">3.5.2.</span> <span class="toc-text">/etc/rc.d/rc#.d/</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#grub-conf"><span class="toc-number">3.6.</span> <span class="toc-text">grub.conf</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#配置文件中各项的含义："><span class="toc-number">3.6.1.</span> <span class="toc-text">配置文件中各项的含义：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#相关文档连接"><span class="toc-number">3.7.</span> <span class="toc-text">相关文档连接</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-5 i,
+        .toc-level-5 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"CentOS 6启动流程　| Learning - 知也无涯　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2161788';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/Linux/CentOS-6常见启动故障及排错/" title="上一篇: CentOS 6常见启动故障及排错">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/WEB/Keepalived实现Nginx反代的高可用/" title="下一篇: Keepalived实现Nginx反代的高可用">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/WEB/源代码编译安装Nginx/">源代码编译安装Nginx</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7启动流程和启动排错/">CentOS 7启动流程和启动排错</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-6常见启动故障及排错/">CentOS 6常见启动故障及排错</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-6启动流程/">CentOS 6启动流程</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/Keepalived实现Nginx反代的高可用/">Keepalived实现Nginx反代的高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Iptables使用方法/">Iptables使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">使用WordPress搭建基于LAMP架构的博客平台</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">验证跨网段通信中，目标主机的网关配置对数据包接收的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/DataBase/SQL语句基础指令语法/">SQL语句基础指令语法</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/PXE自动化安装centos6和centos7/">PXE自动化安装centos6和centos7</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/SSH端口转发/">SSH端口转发</a></li><li class="post-list-item"><a class="post-list-link" href="/Security/搭建私有CA/">搭建私有CA</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/制作一个简单的小Linux系统/">制作一个简单的小Linux系统</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/CentOS-7-配置网络组/">CentOS 7 配置网络组</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/grep和正则表达式/">grep和正则表达式</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/多网卡绑定配置-bonding/">多网卡绑定配置-bonding</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux文件查找利器-locate-find/">Linux文件查找利器 locate & find</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/CentOS-7搭建yum服务器/">CentOS7搭建yum服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/vim使用手册/">vim使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux帮助使用方法/">Linux帮助使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7-3-从下载到安装/">CentOS7.3从下载到安装</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 执念
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

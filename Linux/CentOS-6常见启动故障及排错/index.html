@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="执念" />
+
+
+
+<meta name="description" content="单用户模式破解root口令 启动时在此界面按任意键进入启动菜单界面。    GRUB的启动菜单页面，在此界面可以看到内核的启动选项，并提供了交互式接口，有e、a、c 三个选项可以使用，分别代表不同的作用。">
+<meta name="keywords" content="启动流程,CentOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CentOS 6常见启动故障及排错">
+<meta property="og:url" content="http://subtraction.tech/Linux/CentOS-6常见启动故障及排错/index.html">
+<meta property="og:site_name" content="Learning - 知也无涯">
+<meta property="og:description" content="单用户模式破解root口令 启动时在此界面按任意键进入启动菜单界面。    GRUB的启动菜单页面，在此界面可以看到内核的启动选项，并提供了交互式接口，有e、a、c 三个选项可以使用，分别代表不同的作用。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180613/cm9FmL4mF7.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180613/gafiedk7GA.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180613/75g5bkgi97.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180510/maHm425F9E.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/2BHjCHeEeG.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/i602BlfCFk.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/mhlBEG9a30.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/j8dH5LcF66.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/L57K7iDFl1.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/3gJ40H2dK8.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/Kb3gg8Fm5H.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/ICJ3Ca7J5b.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/18G48gD4FJ.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/dF1b75ABmj.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/8ElA1bC85L.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/iji5hbDFj9.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/1e2Ei6h80f.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/3fcGK0g5K0.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/lK0e02Fgi0.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/63Halgljlj.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/EHgKGm1DBm.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/63Halgljlj.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/EFkID88017.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/bF7aG8mh8L.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/6Im4Kb834G.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/eG730d6Kh2.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/jAC51HmG8l.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/AL4g4iejgH.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/bG2fCh90k6.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/63Halgljlj.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/2G2i8KBbmf.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/di4GB2abCl.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/C5DF3CKI3F.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/6m5a21C2GH.png?imageslim">
+<meta property="og:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/ldbLKI0021.png?imageslim">
+<meta property="og:updated_time" content="2018-06-13T15:24:48.373Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CentOS 6常见启动故障及排错">
+<meta name="twitter:description" content="单用户模式破解root口令 启动时在此界面按任意键进入启动菜单界面。    GRUB的启动菜单页面，在此界面可以看到内核的启动选项，并提供了交互式接口，有e、a、c 三个选项可以使用，分别代表不同的作用。">
+<meta name="twitter:image" content="http://p7ds7yr9p.bkt.clouddn.com/blog/180613/cm9FmL4mF7.png?imageslim">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Learning - 知也无涯" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/智子.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-corner-indicator.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>CentOS 6常见启动故障及排错 | Learning - 知也无涯</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?fb5cb1201030123c8ccc4051f4e759fd";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/sxy.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">执念</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CA/">CA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/">Gateway</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HA/">HA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Iptables/">Iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keepalived/">Keepalived</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PXE/">PXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RE/">RE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSH/">SSH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/find/">find</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grep/">grep</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/locate/">locate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/man/">man</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://www.ilinux.io/">ilinux.io</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于系统架构</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">执念</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/sxy.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">执念</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">人生就是一个不断做减法的过程；</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto: https://mail.163.com/" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/signup" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/" title="网易云音乐"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="http://web2.qq.com/" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="https://wx.qq.com/" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-CentOS-6常见启动故障及排错" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Linux/CentOS-6常见启动故障及排错/" class="article-date">
+      <time datetime="2018-05-15T13:43:46.000Z" itemprop="datePublished">2018-05-15</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      CentOS 6常见启动故障及排错
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS/">CentOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/启动流程/">启动流程</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<h3 id="单用户模式破解root口令"><a href="#单用户模式破解root口令" class="headerlink" title="单用户模式破解root口令"></a>单用户模式破解root口令</h3><ol>
+<li>启动时在此界面按任意键进入启动菜单界面。</li>
+</ol>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180613/cm9FmL4mF7.png?imageslim" alt="mark"></p>
+<ol start="2">
+<li>GRUB的启动菜单页面，在此界面可以看到内核的启动选项，并提供了交互式接口，有e、a、c 三个选项可以使用，分别代表不同的作用。</li>
+</ol>
+<a id="more"></a>
+<ul>
+<li>a：修改内核参数 </li>
+<li>e：编辑启动项<ul>
+<li>d：删除</li>
+<li>o：打开一个新行</li>
+<li>e：编辑行内容</li>
+<li>b：启动</li>
+</ul>
+</li>
+<li>c：命令模式，提供交互式接口</li>
+</ul>
+<p>键盘敲a键，进入内核参数的编辑界面</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180613/gafiedk7GA.png?imageslim" alt="mark"></p>
+<ol start="3">
+<li>在此界面输入1，而后回车进入单用户模式。</li>
+</ol>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180613/75g5bkgi97.png?imageslim" alt="mark"></p>
+<ol start="4">
+<li>下图就是单用户的界面，不需要输入密码，直接以root身份登录，可以直接使用<code>passwd</code>命令修改口令，然后使用<code>init</code>命令切换运行级别进行正常登录，看到登录页面后输入修改过的口令就可以直接登录。</li>
+</ol>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180510/maHm425F9E.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="进入救援模式的方法"><a href="#进入救援模式的方法" class="headerlink" title="进入救援模式的方法"></a>进入救援模式的方法</h3><ol>
+<li>使用光盘引导启动，光盘的系统版本要和需要修复的系统的版本对应。选中 <code>Rescue installd system</code> 回车进入。</li>
+</ol>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/2BHjCHeEeG.png?imageslim" alt="mark"></p>
+<ol>
+<li>选择使用的语言，直接回车，使用默认选项就可以。</li>
+</ol>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/i602BlfCFk.png?imageslim" alt="mark"></p>
+<ol>
+<li>选择使用的键盘类型，使用默认值，直接回车。</li>
+</ol>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/mhlBEG9a30.png?imageslim" alt="mark"></p>
+<ol>
+<li>根据需求来选择是否设置网络，这里选择NO不进行设置。</li>
+</ol>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/j8dH5LcF66.png?imageslim" alt="mark"></p>
+<ol>
+<li>接下来的几个页面是介绍救援模式的，选择<code>Continue</code>和<code>OK</code>跳过即可；</li>
+</ol>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/L57K7iDFl1.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/3gJ40H2dK8.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/Kb3gg8Fm5H.png?imageslim" alt="mark"></p>
+<ol>
+<li>选择第一项开启一个shell，进入命令行模式进行修复，修复完成后执行<code>exit</code>命令退出后选择第三项进行重启。</li>
+</ol>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/ICJ3Ca7J5b.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/18G48gD4FJ.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="GRUB-stage-1故障导致的系统无法启动"><a href="#GRUB-stage-1故障导致的系统无法启动" class="headerlink" title="GRUB stage 1故障导致的系统无法启动"></a>GRUB stage 1故障导致的系统无法启动</h3><h4 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h4><p>GRUB 1阶段出现故障，导致无法通过硬盘引导启动，默认会尝试通过其它引导方式启动，下图就是尝试通过网络启动，但未能成功引导，报错操作系统没有发现。</p>
+<p><em>破坏stage 1的方法：</em></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> dd <span class="keyword">if</span>=/dev/zero of=/dev/sda bs=1 count=446</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> hexdump -C -n 512 /dev/sda	<span class="comment">#可以看到82 20之前的内容已经全部清零</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> reboot</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/dF1b75ABmj.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/8ElA1bC85L.png?imageslim" alt="mark"></p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><p>挂载光盘进入救援模式，通过<code>chroot /mnt/sysimage/</code>命令完成切根操作，通过<code>grub-install</code>命令修复系统所在硬盘stage 1中的内容，通过<code>hexdump</code>命令可以检测修复的结果，使用<code>sync</code>同步磁盘写入，执行两次<code>exit</code>命令退出后重新启动系统。</p>
+<p><code>grub-install</code>命令不仅可以修复stage 1，同时还可以修复 stage 1.5和stage 2，此命令的执行过程中可能会出现一次执行不能修复的情况，重新执行一次便可以了。</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/iji5hbDFj9.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="GRUB-stage-1-5故障导致的系统无法启动"><a href="#GRUB-stage-1-5故障导致的系统无法启动" class="headerlink" title="GRUB stage 1.5故障导致的系统无法启动"></a>GRUB stage 1.5故障导致的系统无法启动</h3><h4 id="问题现象-1"><a href="#问题现象-1" class="headerlink" title="问题现象"></a>问题现象</h4><p>GRUB stage 1没有问题，所以系统可以读取硬盘启动，但又到不了stage 2 所以看不到启动菜单，便会出现下图的故障现象，会有一个黑屏界面。</p>
+<p><em>破坏stage 1.5的方法：</em></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> dd <span class="keyword">if</span>=/dev/zero of=/dev/sda bs=1 count=10240 skip=512 seek=512</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> hexdump -C -n 10240 /dev/sda	<span class="comment">#可以看到55 aa之后的内容已经全部清零</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> reboot</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/1e2Ei6h80f.png?imageslim" alt="mark"></p>
+<h4 id="解决方法-1"><a href="#解决方法-1" class="headerlink" title="解决方法"></a>解决方法</h4><p>挂载光盘进入救援模式，通过<code>chroot /mnt/sysimage/</code>命令完成切根操作，使用<code>grub-install</code>命令或<code>grub</code>命令以交互的方式进行修复，使用<code>sync</code>同步磁盘写入，执行两次<code>exit</code>命令退出后重新启动系统。</p>
+<p>使用可交互的grub命令安装1.5阶段，此方法作为<code>grub-install</code>修复方式的补充，这种方式的缺点是依赖于/boot/grub/目录下的1.5阶段备份文件，如果没有备份文件，则此方法不可用。</p>
+<ul>
+<li>root (hd0,0)：根分区在第一个硬盘的第一个分区</li>
+<li>setup (hd0)：表示要把grub装在那块硬盘上。</li>
+</ul>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/3fcGK0g5K0.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="重装grub之后，-boot-grub-stage2文件被删除的报错"><a href="#重装grub之后，-boot-grub-stage2文件被删除的报错" class="headerlink" title="重装grub之后，/boot/grub/stage2文件被删除的报错"></a>重装grub之后，/boot/grub/stage2文件被删除的报错</h3><p>重装grub之后/boot/grub/stage2文件不再只是备份作用，而会变成启动时会被依赖的文件，丢失会影响启动，需要进入救援模式修复后才能正常启动。</p>
+<p>删除/boot/grub/stage2文件的报错：</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180513/lK0e02Fgi0.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="删除-boot-grub-目录导致的系统无法启动"><a href="#删除-boot-grub-目录导致的系统无法启动" class="headerlink" title="删除/boot/grub/目录导致的系统无法启动"></a>删除/boot/grub/目录导致的系统无法启动</h3><h4 id="问题现象-2"><a href="#问题现象-2" class="headerlink" title="问题现象"></a>问题现象</h4><p>GRUB stage 2故障，1和1.5 stage的启动没有问题，启动到2 stage时由于没有grub.conf文件，会无法加载启动菜单和启动项，导致启动中止，会有<code>grub&gt;_</code>字样的报错。</p>
+<p>执行<code>rm -rf /boot/grub</code>命令后重启服务器，便会出现下图中的报错；    </p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/63Halgljlj.png?imageslim" alt="mark"></p>
+<h4 id="解决方法-2"><a href="#解决方法-2" class="headerlink" title="解决方法"></a>解决方法</h4><p>修复的命令参考下图，在<code>grub&gt;</code>后输入grub.conf文件中<code>title</code>字段及下面的两行，这个过程可以使用Tab键补全,实例启动后记得恢复丢失的/boot/grub/grub.conf文件，否则下次重启还会无法启动。</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/EHgKGm1DBm.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="删除-boot-目录导致的系统无法启动"><a href="#删除-boot-目录导致的系统无法启动" class="headerlink" title="删除/boot/目录导致的系统无法启动"></a>删除/boot/目录导致的系统无法启动</h3><h4 id="问题现象-3"><a href="#问题现象-3" class="headerlink" title="问题现象"></a>问题现象</h4><p>报错的界面和删除grub.conf文件的报错相同，会有<code>grub&gt;_</code>字样的报错。但由于删除的是/boot目录，导致后续启动所依赖到的kernel文件和ramdisk文件也被一并删除，这种情况下，即使参考上面的方法进行修复也是无济于事。</p>
+<p>执行<code>rm -rf /boot</code>命令后重启服务器，便会出现下图中的报错；</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/63Halgljlj.png?imageslim" alt="mark"></p>
+<h4 id="解决方法-3"><a href="#解决方法-3" class="headerlink" title="解决方法"></a>解决方法</h4><p>解决这个问题的思路是挂载光盘进入救援模式，切根后重新挂载光盘，复制光盘中的内核文件到boot目录中，再使用<code>mkinitrd</code>命令生成initramfs文件，使用<code>grub-install</code>命令生成/boot/grub目录，临时在grub目录下编辑一个用于引导启动的grub.conf文件，最后使用sync命令向磁盘同步一下数据，exit退出后重启。    </p>
+<p><em>具体操作方法参考下面截图：</em></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/EFkID88017.png?imageslim" alt="mark"></p>
+<p>临时创建/boot/grub/grub.conf文件，格式参考下图：</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/bF7aG8mh8L.png?imageslim" alt="mark"></p>
+<p><em>补充：</em>initrd字段的参数比较长，比较容易输入错误，建议参考下图，通过vim的扩展命令模式直接将文件名读取到文件中，输入过程中支持tab键补全，避免因为文件名书写错误导致的修复失败。</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/6Im4Kb834G.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="删除-sbin-init程序导致的系统无法启动"><a href="#删除-sbin-init程序导致的系统无法启动" class="headerlink" title="删除/sbin/init程序导致的系统无法启动"></a>删除/sbin/init程序导致的系统无法启动</h3><h4 id="问题现象-4"><a href="#问题现象-4" class="headerlink" title="问题现象"></a>问题现象</h4><p>可以看到启动菜单和启动过程，启动会卡在<code>sh-4.1#</code>字样的命令提示符处，无法进行输入，无法启动。</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/eG730d6Kh2.png?imageslim" alt="mark"></p>
+<h4 id="解决方法-4"><a href="#解决方法-4" class="headerlink" title="解决方法"></a>解决方法</h4><p>强制重启后按任意键进入启动菜单页面，在启动菜单页面按<code>a</code>键更改内核启动参数，将系统默认首个启动进程由/sbin/init改为/bin/bash。成功进入系统后，查询init程序的来源软件包，之后挂载光盘强制重新安装即可修复。这种修复方式可以用于某些特殊文件被破坏时，不需要进入救援模式就可以直接修复。</p>
+<p><strong>Note：</strong></p>
+<ul>
+<li>使用/bin/bash引导系统启动，进入系统后磁盘会是只读的，需要重新以读写方式挂载一下。</li>
+<li>由于之前系统中已经安装过upstart软件包，所以安装时需要使用<code>--force</code>选项进行强制安装。</li>
+</ul>
+<p><em>具体操作步骤请参考以下截图：</em></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/jAC51HmG8l.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/AL4g4iejgH.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/bG2fCh90k6.png?imageslim" alt="mark"></p>
+<hr>
+<h3 id="删除-etc-fstab文件和-boot目录导致的系统无法启动"><a href="#删除-etc-fstab文件和-boot目录导致的系统无法启动" class="headerlink" title="删除/etc/fstab文件和/boot目录导致的系统无法启动"></a>删除/etc/fstab文件和/boot目录导致的系统无法启动</h3><h4 id="问题现象-5"><a href="#问题现象-5" class="headerlink" title="问题现象"></a>问题现象</h4><p>无法通过GRUB 2 stage的引导，报错与删除/boot目录的报错相同。</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180514/63Halgljlj.png?imageslim" alt="mark"></p>
+<h4 id="解决方法-5"><a href="#解决方法-5" class="headerlink" title="解决方法"></a>解决方法</h4><p>修复方法和删除/boot分区的修复方法类似，比较麻烦的是进入救援模式后，由于/etc/fstab文件被被删除，导致之前系统中的分区无法被自动识别和挂载，不能直接进行切根修复。</p>
+<ol>
+<li>挂载光盘进入救援模式，使用<code>fdisk -l</code>命令查看当前系统中的所有磁盘和每个磁盘的分区情况，找出每个设备所对应的挂载点，如果不清楚各个设备和挂载点的对应情况，可以将设备临时挂载一下，查看设备中的文件内容，推导出这个设备名之前所对应的挂载点名称。</li>
+<li>清楚了设备和挂载点的对应挂载关系之后，便可以临时挂载根分区，重新创建/etc/fstab文件。挂载根分区时不要直接挂载到/mnt目录下，使用<code>df -h</code>命令可以看到/mnt/runtime目录下挂载的是loop0设备，对应的是光盘，直接向/mnt目录进行挂载会使之前的挂载被覆盖掉，导致救援模式不能正常使用。</li>
+<li>重新创建好/etc/fstab文件后，退出重新进入救援模式，根分区会自动被挂载，通过切根的方式进入根分区。</li>
+<li>挂载光盘通过安装kernel软件包，生成/boot分区下的vmlinuz和initramfs文件，通过grub-install命令生成grub目录，重新创建/boot/grub/grub.conf文件，编辑完成后退出重启主机正常登录。</li>
+</ol>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/2G2i8KBbmf.png?imageslim" alt="mark"></p>
+<p>观察<code>fdisk -l</code>命令的显示结果，在boot字段下有<code>*</code>标记的是boot分区，System字段下有swap字样的是swap分区，剩余的分区如果还有不清楚和挂载点对应关系的，可以通过临时挂载的方式，看下目录中的内容，根据目录中的内容和分区的大小来推导一下。根分区通过挂载是比较好识别的，看下里面的目录结构就清楚了。</p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/di4GB2abCl.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/C5DF3CKI3F.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/6m5a21C2GH.png?imageslim" alt="mark"></p>
+<p><img src="http://p7ds7yr9p.bkt.clouddn.com/blog/180515/ldbLKI0021.png?imageslim" alt="mark"></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Linux/CentOS-6常见启动故障及排错/">CentOS 6常见启动故障及排错</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">执念</a></p>
+        <p><span>发布时间:</span>2018-05-15, 21:43:46</p>
+        <p><span>最后更新:</span>2018-06-13, 23:24:48</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Linux/CentOS-6常见启动故障及排错/" title="CentOS 6常见启动故障及排错">http://subtraction.tech/Linux/CentOS-6常见启动故障及排错/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://subtraction.tech/Linux/CentOS-6常见启动故障及排错/　　作者: 执念" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/Linux/CentOS-7启动流程和启动排错/">
+                    CentOS 7启动流程和启动排错
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/Linux/CentOS-6启动流程/">
+                    CentOS 6启动流程
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#单用户模式破解root口令"><span class="toc-number">1.</span> <span class="toc-text">单用户模式破解root口令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进入救援模式的方法"><span class="toc-number">2.</span> <span class="toc-text">进入救援模式的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GRUB-stage-1故障导致的系统无法启动"><span class="toc-number">3.</span> <span class="toc-text">GRUB stage 1故障导致的系统无法启动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#问题现象"><span class="toc-number">3.1.</span> <span class="toc-text">问题现象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方法"><span class="toc-number">3.2.</span> <span class="toc-text">解决方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GRUB-stage-1-5故障导致的系统无法启动"><span class="toc-number">4.</span> <span class="toc-text">GRUB stage 1.5故障导致的系统无法启动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#问题现象-1"><span class="toc-number">4.1.</span> <span class="toc-text">问题现象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方法-1"><span class="toc-number">4.2.</span> <span class="toc-text">解决方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重装grub之后，-boot-grub-stage2文件被删除的报错"><span class="toc-number">5.</span> <span class="toc-text">重装grub之后，/boot/grub/stage2文件被删除的报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除-boot-grub-目录导致的系统无法启动"><span class="toc-number">6.</span> <span class="toc-text">删除/boot/grub/目录导致的系统无法启动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#问题现象-2"><span class="toc-number">6.1.</span> <span class="toc-text">问题现象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方法-2"><span class="toc-number">6.2.</span> <span class="toc-text">解决方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除-boot-目录导致的系统无法启动"><span class="toc-number">7.</span> <span class="toc-text">删除/boot/目录导致的系统无法启动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#问题现象-3"><span class="toc-number">7.1.</span> <span class="toc-text">问题现象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方法-3"><span class="toc-number">7.2.</span> <span class="toc-text">解决方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除-sbin-init程序导致的系统无法启动"><span class="toc-number">8.</span> <span class="toc-text">删除/sbin/init程序导致的系统无法启动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#问题现象-4"><span class="toc-number">8.1.</span> <span class="toc-text">问题现象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方法-4"><span class="toc-number">8.2.</span> <span class="toc-text">解决方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除-etc-fstab文件和-boot目录导致的系统无法启动"><span class="toc-number">9.</span> <span class="toc-text">删除/etc/fstab文件和/boot目录导致的系统无法启动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#问题现象-5"><span class="toc-number">9.1.</span> <span class="toc-text">问题现象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方法-5"><span class="toc-number">9.2.</span> <span class="toc-text">解决方法</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-5 i,
+        .toc-level-5 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"CentOS 6常见启动故障及排错　| Learning - 知也无涯　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2161788';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/Linux/CentOS-7启动流程和启动排错/" title="上一篇: CentOS 7启动流程和启动排错">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/Linux/CentOS-6启动流程/" title="下一篇: CentOS 6启动流程">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/WEB/源代码编译安装Nginx/">源代码编译安装Nginx</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7启动流程和启动排错/">CentOS 7启动流程和启动排错</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-6常见启动故障及排错/">CentOS 6常见启动故障及排错</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-6启动流程/">CentOS 6启动流程</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/Keepalived实现Nginx反代的高可用/">Keepalived实现Nginx反代的高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Iptables使用方法/">Iptables使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/WEB/使用WordPress搭建基于LAMP架构的博客平台/">使用WordPress搭建基于LAMP架构的博客平台</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/验证跨网段通信中，目标主机的网关配置对数据包接收的影响/">验证跨网段通信中，目标主机的网关配置对数据包接收的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/DataBase/SQL语句基础指令语法/">SQL语句基础指令语法</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/PXE自动化安装centos6和centos7/">PXE自动化安装centos6和centos7</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/SSH端口转发/">SSH端口转发</a></li><li class="post-list-item"><a class="post-list-link" href="/Security/搭建私有CA/">搭建私有CA</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/制作一个简单的小Linux系统/">制作一个简单的小Linux系统</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/CentOS-7-配置网络组/">CentOS 7 配置网络组</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/grep和正则表达式/">grep和正则表达式</a></li><li class="post-list-item"><a class="post-list-link" href="/Network/多网卡绑定配置-bonding/">多网卡绑定配置-bonding</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux文件查找利器-locate-find/">Linux文件查找利器 locate & find</a></li><li class="post-list-item"><a class="post-list-link" href="/Automate/CentOS-7搭建yum服务器/">CentOS7搭建yum服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/vim使用手册/">vim使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/Command/Linux帮助使用方法/">Linux帮助使用方法</a></li><li class="post-list-item"><a class="post-list-link" href="/Linux/CentOS-7-3-从下载到安装/">CentOS7.3从下载到安装</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 执念
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
